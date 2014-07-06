@@ -1,0 +1,8 @@
+{
+	"general":
+	{
+		"test_int": 640,
+		"test_string": "Liero3D",
+		"test_float": 3.14
+	}
+}
