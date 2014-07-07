@@ -1,9 +1,7 @@
-#ifndef MESSAGINGSYSTEM_H
-#define MESSAGINGSYSTEM_H
+#ifndef _MESSAGINGSYSTEM_H_
+#define _MESSAGINGSYSTEM_H_
 
 #include <vector>
-
-namespace core {
 
 class NoSynchronization {
 public:
@@ -106,7 +104,5 @@ private:
     // to listener objects
     ListenersCollection<Listener, Mutex, BagType> listeners_;
 };
-
-}
 
 #endif // MESSAGINGSYSTEM_H

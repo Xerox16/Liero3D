@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Xerox
-Date                   :=06/07/14
+Date                   :=07/07/14
 CodeLitePath           :="/home/xerox/.codelite"
 LinkerName             :=g++
 ArchiveTool            :=ar rcus
@@ -48,7 +48,7 @@ LibPath                := "$(LibraryPathSwitch)." "$(LibraryPathSwitch)/usr/lib"
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects=$(IntermediateDirectory)/source_utilities$(ObjectSuffix) $(IntermediateDirectory)/source_config$(ObjectSuffix) $(IntermediateDirectory)/source_unit_test$(ObjectSuffix) 
+Objects=$(IntermediateDirectory)/source_utilities$(ObjectSuffix) $(IntermediateDirectory)/source_config$(ObjectSuffix) $(IntermediateDirectory)/source_unit_test$(ObjectSuffix) $(IntermediateDirectory)/source_messagehub$(ObjectSuffix) 
 
 ##
 ## Main Build Targets 
@@ -92,6 +92,14 @@ $(IntermediateDirectory)/source_unit_test$(DependSuffix): source/unit_test.cpp
 $(IntermediateDirectory)/source_unit_test$(PreprocessSuffix): source/unit_test.cpp
 	@$(CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/source_unit_test$(PreprocessSuffix) "/home/xerox/Programmierung/Projekte/Liero3D/source/unit_test.cpp"
 
+$(IntermediateDirectory)/source_messagehub$(ObjectSuffix): source/messagehub.cpp $(IntermediateDirectory)/source_messagehub$(DependSuffix)
+	$(CompilerName) $(SourceSwitch) "/home/xerox/Programmierung/Projekte/Liero3D/source/messagehub.cpp" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/source_messagehub$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/source_messagehub$(DependSuffix): source/messagehub.cpp
+	@$(CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/source_messagehub$(ObjectSuffix) -MF$(IntermediateDirectory)/source_messagehub$(DependSuffix) -MM "/home/xerox/Programmierung/Projekte/Liero3D/source/messagehub.cpp"
+
+$(IntermediateDirectory)/source_messagehub$(PreprocessSuffix): source/messagehub.cpp
+	@$(CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/source_messagehub$(PreprocessSuffix) "/home/xerox/Programmierung/Projekte/Liero3D/source/messagehub.cpp"
+
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
 ##
@@ -107,6 +115,9 @@ clean:
 	$(RM) $(IntermediateDirectory)/source_unit_test$(ObjectSuffix)
 	$(RM) $(IntermediateDirectory)/source_unit_test$(DependSuffix)
 	$(RM) $(IntermediateDirectory)/source_unit_test$(PreprocessSuffix)
+	$(RM) $(IntermediateDirectory)/source_messagehub$(ObjectSuffix)
+	$(RM) $(IntermediateDirectory)/source_messagehub$(DependSuffix)
+	$(RM) $(IntermediateDirectory)/source_messagehub$(PreprocessSuffix)
 	$(RM) $(OutputFile)
 
 

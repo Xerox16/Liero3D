@@ -6,12 +6,16 @@
     <File Name="source/utilities.cpp"/>
     <File Name="source/config.cpp"/>
     <File Name="source/unit_test.cpp"/>
+    <File Name="source/messagehub.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="header">
     <File Name="header/utilities.h"/>
     <File Name="header/config.h"/>
     <File Name="header/exception.h"/>
     <File Name="header/constants.h"/>
+    <File Name="header/messagingsystem.h"/>
+    <File Name="header/messagehub.h"/>
+    <File Name="header/messages.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
