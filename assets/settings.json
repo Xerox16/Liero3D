@@ -1,7 +1,8 @@
 {
 	"general":
 	{
-		"widht": 640,
-		"height": 480
+		"window_width": 640,
+		"window_height": 480,
+		"is_fullscreen": 0
 	}
 }

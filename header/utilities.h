@@ -5,7 +5,7 @@
 
 class IrrlichtUtilities {
 public:
-	static irr::IrrlichtDevice* initialize(int widht, int height);
+	static irr::IrrlichtDevice* initialize(int widht, int height, int fullscreen);
 };
 
 #endif
