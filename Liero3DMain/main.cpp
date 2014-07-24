@@ -6,9 +6,9 @@
 #include <boost/exception/all.hpp>
 #include <boost/test/unit_test.hpp>
 
-#include "header/utilities.h"
-#include "header/config.h"
-#include "header/exception.h"
+#include "utilities.h"
+#include "config.h"
+#include "exception.h"
 
 using namespace irr;
 using namespace core;
@@ -31,7 +31,7 @@ int main()
 
 		device = IrrlichtUtilities::initialize(width, height, fullscreen);
 		if(!device) {
-			BOOST_THROW_EXCEPTION(BasicException("Failed to create Irrlicht device"));
+			BOOST_THROW_EXCEPTION(BasicException("aborted creating irrlicht device"));
 		}
 
 	} catch(boost::exception& e) {

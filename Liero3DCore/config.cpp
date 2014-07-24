@@ -1,9 +1,9 @@
 #define BOOST_LOG_DYN_LINK 1
 
-#include "header/config.h"
-
 #include <boost/log/trivial.hpp>
 #include <boost/property_tree/json_parser.hpp>
+
+#include "config.h"
 
 Configuration::Configuration()
 	:pt_()

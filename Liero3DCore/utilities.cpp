@@ -1,6 +1,6 @@
-#include "header/utilities.h"
-
 #include <iostream>
+
+#include "utilities.h"
 
 using namespace irr;
 

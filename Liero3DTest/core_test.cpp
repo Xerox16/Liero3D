@@ -6,9 +6,9 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/exception/all.hpp>
 
-#include "header/utilities.h"
-#include "header/config.h"
-#include "header/messagingsystem.h"
+#include "../Liero3DCore/utilities.h"
+#include "../Liero3DCore/config.h"
+#include "../Liero3DCore/messagingsystem.h"
 
 using namespace std;
 

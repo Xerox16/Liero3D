@@ -37,4 +37,12 @@ ehthumbs.db
 Thumbs.db
 
 #Project related files
-Debug/
+Liero3DCore/Debug/
+Liero3DTest/Debug/
+Liero3DMain/Debug/
+*.mk
+*.txt
+.clang
+.codelite
+.build-debug
+Makefile
