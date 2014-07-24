@@ -3,7 +3,8 @@
 
 #include "header/messages.h"
 
-class MessageHub {
+class MessageHub
+{
 public:
 };
 

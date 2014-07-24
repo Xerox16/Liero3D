@@ -14,58 +14,62 @@ typedef boost::error_info<struct tag_error, std::string> ExceptionDescription;
 
 //base class for all exceptions, with boost debug information
 class BasicException :
-    public boost::exception,
-    public std::exception {
+	public boost::exception,
+	public std::exception
+{
 public:
-    BasicException(const std::string& error) throw()
-        : error_(error) {
-    };
+	BasicException(const std::string& error) throw()
+		: error_(error) {
+	};
 
-    virtual ~BasicException() throw() {
-    }
-	
+	virtual ~BasicException() throw() {
+	}
+
 //implement std::exception.what()
-    virtual char const* what() const throw() {
-        return error_.c_str();
-    }
+	virtual char const* what() const throw() {
+		return error_.c_str();
+	}
 
 private:
-    std::string error_; //error description
+	std::string error_; //error description
 };
 
 
 class FileOpenException :
-    public BasicException {
+	public BasicException
+{
 public:
-    FileOpenException() throw() :
-        BasicException("Error while reading file!") {
-    }
+	FileOpenException() throw() :
+		BasicException("Error while reading file!") {
+	}
 
-    FileOpenException(std::string path) throw() :
-        BasicException("Error while reading " + path) {
-    }
+	FileOpenException(std::string path) throw() :
+		BasicException("Error while reading " + path) {
+	}
 
 };
 
 
-class OutOfRangeException : public BasicException {
+class OutOfRangeException : public BasicException
+{
 public:
-    OutOfRangeException() throw()
-        : BasicException("Tried to access element out of range!") {
-    }
-    OutOfRangeException(std::string what) throw()
-        : BasicException(what) {
-    }
+	OutOfRangeException() throw()
+		: BasicException("Tried to access element out of range!") {
+	}
+	OutOfRangeException(std::string what) throw()
+		: BasicException(what) {
+	}
 };
 
-class AccessViolationException : public BasicException {
+class AccessViolationException : public BasicException
+{
 public:
-    AccessViolationException() throw()
-        : BasicException(std::string("Tried to access uninitialized element")) {
-    }
-    AccessViolationException(std::string what) throw()
-        : BasicException(what) {
-    }
+	AccessViolationException() throw()
+		: BasicException(std::string("Tried to access uninitialized element")) {
+	}
+	AccessViolationException(std::string what) throw()
+		: BasicException(what) {
+	}
 };
 
 

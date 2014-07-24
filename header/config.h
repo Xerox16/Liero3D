@@ -3,13 +3,14 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-class Configuration {
+class Configuration
+{
 public:
-    Configuration();
+	Configuration();
 //load json-file with given path
-    void load(const std::string& filename);
+	void load(const std::string& filename);
 //free memory from configuration file
-    void unload();
+	void unload();
 //get integer from configuration file, throw exception if path is invalid
 	int getInt(const std::string& path) const;
 //get string from configuration file, throw exception if path is invalid
@@ -23,4 +24,3 @@ private:
 
 
 #endif
-

@@ -3,7 +3,8 @@
 
 #include <irrlicht.h>
 
-class IrrlichtUtilities {
+class IrrlichtUtilities
+{
 public:
 	static irr::IrrlichtDevice* initialize(int widht, int height, int fullscreen);
 };
