@@ -27,7 +27,9 @@
   <Dependencies/>
   <VirtualDirectory Name="include"/>
   <VirtualDirectory Name="src">
-    <File Name="main.cpp"/>
+    <File Name="main.cpp" ExcludeProjConfig="Debug"/>
+    <File Name="polyvox_integration.cpp" ExcludeProjConfig=""/>
+    <File Name="irrlicht_minimal.cpp" ExcludeProjConfig="Debug"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
@@ -46,10 +48,13 @@
       <Compiler Options="-g;-Wall;-std=c++0x;-DBOOST_ALL_DYN_LINK" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="."/>
         <IncludePath Value="/usr/include/irrlicht/"/>
+        <IncludePath Value="/usr/local/include/PolyVoxCore/"/>
+        <IncludePath Value="/usr/local/include/PolyVoxUtil/"/>
         <IncludePath Value="../Liero3DCore/"/>
       </Compiler>
       <Linker Options="" Required="yes">
-        <LibraryPath Value="../../Liero3DCore/Debug"/>
+        <LibraryPath Value="../../Liero3DCore/Debug/"/>
+        <LibraryPath Value="/usr/local/lib/"/>
         <Library Value="Irrlicht"/>
         <Library Value="pthread"/>
         <Library Value="boost_thread"/>
@@ -59,6 +64,8 @@
         <Library Value="boost_log_setup"/>
         <Library Value="boost_log"/>
         <Library Value="Liero3DCore"/>
+        <Library Value="PolyVoxCore"/>
+        <Library Value="PolyVoxUtil"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
