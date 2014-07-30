@@ -4,7 +4,7 @@
 
 using namespace irr;
 
-IrrlichtDevice* IrrlichtUtilities::initialize(int width, int height, int fullscreen)
+IrrlichtDevice* IrrlichtUtilities::initialize(int width, int height, int fullscreen, IEventReceiver* receiver)
 {
 	video::E_DRIVER_TYPE driverType;
 
@@ -47,7 +47,7 @@ IrrlichtDevice* IrrlichtUtilities::initialize(int width, int height, int fullscr
 	// create device and exit if creation failed
 
 	IrrlichtDevice* device =
-	    createDevice(driverType, core::dimension2d<u32>(width, height), 32, isFullscreen);
+	    createDevice(driverType, core::dimension2d<u32>(width, height), 32, isFullscreen, false, false, receiver);
 
 	return device;
 }

@@ -33,11 +33,15 @@
     <File Name="messagehub.h"/>
     <File Name="constants.h"/>
     <File Name="utilities.h"/>
+    <File Name="event_receiver.h"/>
+    <File Name="controls.h" ExcludeProjConfig="Debug"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
     <File Name="messagehub.cpp"/>
     <File Name="config.cpp"/>
     <File Name="utilities.cpp"/>
+    <File Name="event_receiver.cpp"/>
+    <File Name="controls.cpp" ExcludeProjConfig="Debug"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>

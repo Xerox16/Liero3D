@@ -4,5 +4,19 @@
 		"window_width": 640,
 		"window_height": 480,
 		"is_fullscreen": 0
+	},
+	"character":
+	{
+		"camera_speed": 50.0
+	},
+	"profiles":
+	{
+		"xerox":
+		{
+			"UP": W,
+			"DOWN": S,
+			"LEFT": A,
+			"RIGHT": D
+		}
 	}
 }

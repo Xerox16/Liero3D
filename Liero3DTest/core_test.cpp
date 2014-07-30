@@ -9,6 +9,7 @@
 #include "../Liero3DCore/utilities.h"
 #include "../Liero3DCore/config.h"
 #include "../Liero3DCore/messagingsystem.h"
+#include "../Liero3DCore/event_receiver.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ BOOST_AUTO_TEST_CASE(config_test)
 	BOOST_REQUIRE_THROW(config.getInt("general.widht"), boost::exception);
 }
 
-/* Declare classes needed for messaging test outside test */
+/* Declare classes needed for messaging test */
 
 // some listener interface
 struct MartianAlertListener {
@@ -164,5 +165,22 @@ BOOST_AUTO_TEST_CASE(messaging_hub_test)
 	BOOST_REQUIRE_EQUAL(jenny.where_, "Earth");
 }
 
+
+BOOST_AUTO_TEST_CASE(event_receiver_test)
+{
+	EventReceiver eventReceiver;
+	//check if object is initialized correctly
+	BOOST_REQUIRE(eventReceiver.isKeyDown(irr::KEY_KEY_Q) == false);
+	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == false);
+	//check key down functions
+	eventReceiver.setKeyDown(irr::KEY_KEY_Q, true);
+	BOOST_REQUIRE(eventReceiver.isKeyDown(irr::KEY_KEY_Q) == true);
+	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == false);
+	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == true);
+	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == true);
+	eventReceiver.setKeyDown(irr::KEY_KEY_Q, false);
+	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == true);
+	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == false);
+}
 
 BOOST_AUTO_TEST_SUITE_END()

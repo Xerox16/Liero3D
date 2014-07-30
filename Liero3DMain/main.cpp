@@ -9,6 +9,7 @@
 #include "utilities.h"
 #include "config.h"
 #include "exception.h"
+#include "event_receiver.h"
 
 using namespace irr;
 using namespace core;
@@ -21,6 +22,7 @@ int main()
 {
 	Configuration config;
 	IrrlichtDevice* device;
+	EventReceiver eventReceiver;
 
 	try {
 		config.load("../assets/settings.json");
@@ -29,7 +31,7 @@ int main()
 		int height = config.getInt("general.window_height");
 		int fullscreen = config.getInt("general.is_fullscreen");
 
-		device = IrrlichtUtilities::initialize(width, height, fullscreen);
+		device = IrrlichtUtilities::initialize(width, height, fullscreen, &eventReceiver);
 		if(!device) {
 			BOOST_THROW_EXCEPTION(BasicException("aborted creating irrlicht device"));
 		}
@@ -64,14 +66,32 @@ int main()
 
 	int lastFPS = -1;
 
-	core::vector3df pos(1.0,0.0,0.0);
+
+	// In order to do framerate independent movement, we have to know
+	// how long it was since the last frame
+	u32 then = device->getTimer()->getTime();
+
+	// This is the movement speed in units per second.
+	const f32 MOVEMENT_SPEED = 50.f;
 
 	while(device->run()) {
 		if(device->isWindowActive()) {
 
-			pos = core::vector3df(pos.X  - 0.001, pos.Y, pos.Z - 0.001);
+			// Work out a frame delta time.
+			const u32 now = device->getTimer()->getTime();
+			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
+			then = now;
+			
+			//move camera according to input
+			core::vector3df pos = root->getPosition();
+			
+			if(eventReceiver.isKeyDown(irr::KEY_KEY_W)) {
+				pos.Y += MOVEMENT_SPEED * frameDeltaTime;
+			} else if(eventReceiver.isKeyDown(irr::KEY_KEY_S)) {
+				pos.Y -= MOVEMENT_SPEED * frameDeltaTime;
+			}
 
-			root->setTarget(pos);
+			root->setPosition(pos);
 
 			driver->beginScene(true, true, video::SColor(255, 200, 200, 200));
 			sceneManager->drawAll();
