@@ -9,11 +9,19 @@
 
 #include "constants.h"
 
-
-class Controls {
+class ControlKeyTranslation {
 public:
-    Controls(); //current configuration file MUST contain controls, otherwhise default controls are loaded
-    virtual ~Controls();
+	ControlKeyTranslation(); //initialize key bimap
+	const std::string& getButton(int value) const;	 //returns a constant reference to the name of the key assigned to the integer value
+	
+private:
+    boost::bimap<std::string, int> keys_; //a string is associated with a irr::Key
+}
+
+class PlayerControls {
+public:
+    PlayerControls(); //current configuration file MUST contain controls, otherwhise default controls are loaded
+    virtual ~PlayerControls();
 
     void fillKeyArray(); //NOTE: This function must be used before any of the functions below are used
     bool getKey(size_t player,Joypad::BUTTON) const;
@@ -36,7 +44,6 @@ private:
 
     std::array<bool,Joypad::BUTTON_COUNT * PLAYER_COUNT> pressedKeys_; //stores which keys are pressed for deprelling
     std::vector< std::shared_ptr<Joypad> > joysticks_;
-    boost::bimap<std::string,int> keys_; //a string is associated with a key
 };
 
 

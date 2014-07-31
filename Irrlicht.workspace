@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Irrlicht" Database="">
-  <Project Name="Liero3DTest" Path="Liero3DTest/Liero3DTest.project" Active="Yes"/>
-  <Project Name="Liero3DCore" Path="Liero3DCore/Liero3DCore.project" Active="No"/>
+  <Project Name="Liero3DTest" Path="Liero3DTest/Liero3DTest.project" Active="No"/>
+  <Project Name="Liero3DCore" Path="Liero3DCore/Liero3DCore.project" Active="Yes"/>
   <Project Name="Liero3DMain" Path="Liero3DMain/Liero3DMain.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
