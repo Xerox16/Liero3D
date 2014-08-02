@@ -4,5 +4,18 @@
 		"test_int": 640,
 		"test_string": "Liero3D",
 		"test_float": 3.14
+	},
+	"profiles":
+	{
+		"test":
+		{
+			"UP": "KEY_UP",
+			"DOWN": "KEY_DOWN",
+			"LEFT": "KEY_LEFT",
+			"RIGHT": "KEY_RIGHT",
+			"ENTER": "KEY_RETURN",
+			"INVENTORY": "KEY_KEY_B",
+			"MENU": "KEY_MENU"			
+		}
 	}
 }

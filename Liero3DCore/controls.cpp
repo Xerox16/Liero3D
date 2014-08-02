@@ -1,18 +1,22 @@
-#include "controls.h"
-
+#include <sstream>
 #include <boost/log/trivial.hpp>
 
+#include "controls.h"
 #include "config.h"
 #include "exception.h"
 
+using namespace irr;
 
+//DEFINITION OF KEY2STRING
 
-ControlKeyTranslation::ControlKeyTranslation()
+Key2String::Key2String()
 	:keys_()
 {
-	typedef boost::bimap<std::string,int> bimap;
+	//define helper typedefs
+	typedef boost::bimap<std::string,irr::EKEY_CODE> bimap;
 	typedef bimap::value_type value_pair;
-	irr::KEY_KEY_0
+	
+	//initialize vector of value pairs with initializer list since boost::bimap does not support initializer lists
 	std::vector<value_pair> v = {
 		{"KEY_LBUTTON", KEY_LBUTTON}, // Left mouse button
 		{"KEY_RBUTTON", KEY_RBUTTON}, // Right mouse button
@@ -168,176 +172,57 @@ ControlKeyTranslation::ControlKeyTranslation()
 		{"KEY_PA1", KEY_PA1}, // PA1 key
 		{"KEY_OEM_CLEAR", KEY_OEM_CLEAR} // Clear key
 	};
-	//copy construct keys_ bimap
+	//copy construct bimap
 	keys_ = bimap(v.begin(), v.end());
 }
 
-const std::string& ControlKeyTranslation::getString(int value) const
+const std::string& Key2String::getString(irr::EKEY_CODE key) const
 {
-	auto iter = keys_.right.find(value);
+	auto iter = keys_.right.find(key);
 
 	if(iter == keys_.right.end()) {
-		std::string("Failed to to fetch button with value " + std::to_string(value) + " from map!");
-		BOOST_THROW_EXCEPTION(exception::BasicException(os));
+		std::string error("Key2String: Failed to to fetch string with key " + std::to_string(key) + " from map!");
+		throw BasicException(error);
 	} 
 		
-	BOOST_LOG_TRIVIAL(debug)<<"Fetched "<<iter->second<<" with value "<<value<<" from map!";
+	BOOST_LOG_TRIVIAL(debug)<<"Fetched "<<iter->second<<" with key "<<key<<" from map!";
 
 
 	return iter->second;
 }
 
-int ControlKeyTranslation::getKey(std::string key) const
+irr::EKEY_CODE Key2String::getKey(const std::string& string_) const
 {
-	auto iter = keys_.left.find(key);
+	auto iter = keys_.left.find(string_);
 
 	if(iter == keys_.left.end()) {
-		std::string("Failed to to fetch value with key " + key + " from map!");
-		BOOST_THROW_EXCEPTION(exception::BasicException(os));
+		std::string error("Key2String: Failed to to fetch key with " + string_ + " from map!");
+		throw BasicException(error);
 	}
 	
-	BOOST_LOG_TRIVIAL(debug)<<"Fetched "<<iter->second<<" with value "<<key<" from map!";
+	BOOST_LOG_TRIVIAL(debug)<<"Fetched "<<iter->second<<" with string "<<string_<<" from map!";
 
 	return iter->second;
 }
 
+//DEFINITION OF USERCONTROLS
 
-const std::array<std::string,PLAYER_COUNT> Controls::playerIDs_ = {
-	"PLAYER_1",	"PLAYER_2",	"PLAYER_3",	"PLAYER_4",
-};
-
-
-const std::array<std::string,Joypad::BUTTON_COUNT> Controls::directionIDs_ = {
+const std::array<std::string, UserControls::ACTION_COUNT> UserControls::actions_ = {
 	"UP","DOWN","LEFT","RIGHT","ENTER","INVENTORY","MENU"
 };
 
-Controls::Controls()
-	:joysticks_(), keys_()
-{
 
-	for(auto iter = pressedKeys_.begin(); iter != pressedKeys_.end();  ++iter) {
-		*iter = false;
-	}
-
-	fillControlMap();
-
-	try {
-		loadButtons();
-
-	} catch (const exception::BasicException& exception) {
-		FILE_LOG(logDEBUG1)<<"Failed to load controls from current configuration";
-		FILE_LOG(logDEBUG1)<<exception.what();
-		loadDefaultButtons();
-	}
-}
-
-Controls::~Controls()
-{
-}
-
-void Controls::loadButtons()
-{
-	for(size_t player = 0; player < PLAYER_COUNT; ++player) {
-
-		std::vector<int> keyValues;
-
-		for(size_t button = 0; button < Joypad::BUTTON_COUNT; ++button) {
-
-			//read keys from ini
-			std::string id(configuration::getConfigString(playerIDs_[player],directionIDs_[button]));
-
-			//if id is not in configuration file alternative configuration false is returned
-			auto iter = keys_.left.find(id);
-			if(iter == keys_.left.end()) {
-				joysticks_.clear();
-				std::ostringstream os;
-				os<<"Failed to read \""<<playerIDs_[player]<<"\" from section \""<<directionIDs_[button]<<"\"!";
-				BOOST_THROW_EXCEPTION(exception::BasicException(os.str()));
-			}
-
-			//store integer value in buffer
-			keyValues.push_back(iter->second);
-		}
-
-		//construct joystick with new values
-		std::shared_ptr<Joypad> joypad(new Joypad(keyValues));
-
-		joysticks_.push_back(joypad);
-	}
-}
-
-void Controls::loadDefaultButtons()
-{
-	for(size_t player = 0; player < PLAYER_COUNT; ++player) {
-		joysticks_.push_back(std::shared_ptr<Joypad> (new Joypad(player)));
-	}
-}
-
-void Controls::setButton(size_t player,Joypad::BUTTON key, int value)
-{
-	set_config_string(playerIDs_[player].c_str(),directionIDs_[key].c_str(),getButton(value).c_str());
-}
-
-const std::string& Controls::getButton(int value) const
-{
-	auto iter = keys_.right.find(value);
-
-	if(iter == keys_.right.end()) {
+void UserControls::loadProfile(const std::string& profile, const Configuration& configuration, const Key2String& k2s) {
+	keys_.clear();
+	
+	//load key string from configuration, translate it to irrlicht hex value, store hex value in key vector
+	for(auto iter = actions_.begin(); iter != actions_.end(); ++iter) {
+		//build configuration string
 		std::ostringstream os;
-		os<<"Failed to to fetch button with value "<<value<<" from map!";
-		BOOST_THROW_EXCEPTION(exception::BasicException(os.str()));
-	} else {
-		FILE_LOG(logDEBUG4)<<"Fetched "<<iter->second<<" with value "<<value<<" from map!";
-	}
-
-	return iter->second;
-}
-
-const std::string& Controls::getButton(size_t player,Joypad::BUTTON button) const
-{
-	return getButton(joysticks_[player]->key[button]);
-}
-
-void Controls::fillKeyArray()
-{
-	for(auto iter = joysticks_.begin(); iter != joysticks_.end(); ++iter) {
-		iter->get()->poll();
-	}
-}
-
-bool Controls::getKey(size_t player, Joypad::BUTTON key) const
-{
-	return joysticks_[player]->button[key] != 0;
-}
-
-bool Controls::getDeprelledKey(size_t player, Joypad::BUTTON key)
-{
-
-	size_t index = player * Joypad::BUTTON_COUNT + key;
-
-	//if button is pressed ...
-	if(getKey(player,key)) {
-		//if it was pressed last time -> pressedKeys_[index] is true, false is returned
-		if(pressedKeys_[index])  {
-			return false;
-		} else {
-			//else we set keyBuf to true and return true
-			pressedKeys_[index] = true;
-			return true;
-		}
-	}
-
-	//if button is not pressed, the perspective entry in cnKeyBuf is set to false .... means key was not pressed last time function was called
-	else {
-		pressedKeys_[index] = false;
-		//return false -> button is not pressed
-		return false;
+		os<<"profiles."<<profile<<"."<<*iter;
+		//fetch key by entry in config file
+		keys_.push_back(k2s.getKey(configuration.getString(os.str())));
 	}
 }
 
 
-void Controls::fillControlMap()
-{
-
-
-}

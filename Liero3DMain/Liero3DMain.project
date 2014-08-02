@@ -31,9 +31,6 @@
     <File Name="polyvox_integration.cpp" ExcludeProjConfig="Debug"/>
     <File Name="irrlicht_minimal.cpp" ExcludeProjConfig="Debug"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
-  <Dependencies Name="Test"/>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -188,4 +185,10 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <Dependencies Name="Test"/>
+  <VirtualDirectory Name="assets">
+    <File Name="assets/settings.json"/>
+  </VirtualDirectory>
 </CodeLite_Project>

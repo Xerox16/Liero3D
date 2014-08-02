@@ -6,10 +6,12 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/exception/all.hpp>
 
-#include "../Liero3DCore/utilities.h"
-#include "../Liero3DCore/config.h"
-#include "../Liero3DCore/messagingsystem.h"
-#include "../Liero3DCore/event_receiver.h"
+#include "utilities.h"
+#include "config.h"
+#include "messagingsystem.h"
+#include "event_receiver.h"
+#include "controls.h"
+#include "exception.h"
 
 using namespace std;
 
@@ -181,6 +183,30 @@ BOOST_AUTO_TEST_CASE(event_receiver_test)
 	eventReceiver.setKeyDown(irr::KEY_KEY_Q, false);
 	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == true);
 	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == false);
+}
+
+BOOST_AUTO_TEST_CASE(controls_test)
+{
+	Key2String k2s;
+	//check getString
+	BOOST_REQUIRE_EQUAL(k2s.getString(irr::KEY_UP), "KEY_UP");
+	BOOST_REQUIRE_EQUAL(k2s.getString(irr::KEY_KEY_0), "KEY_KEY_0");
+	BOOST_REQUIRE_THROW(k2s.getString(irr::KEY_KEY_CODES_COUNT), BasicException);
+	
+	//check getKey
+	BOOST_REQUIRE_EQUAL(k2s.getKey("KEY_UP"), irr::KEY_UP);
+	BOOST_REQUIRE_EQUAL(k2s.getKey("KEY_KEY_0"), irr::KEY_KEY_0);
+	BOOST_REQUIRE_THROW(k2s.getKey("no_valid_identifier"), BasicException);
+	
+	UserControls controls;
+	
+	//construct empty configuration
+	Configuration config;
+	//load config file
+	config.load("../assets/debug.json");
+	//test loadProfile
+	controls.loadProfile("test", config, k2s);
+	//controls.loadProfile("not_listed", config, k2s);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

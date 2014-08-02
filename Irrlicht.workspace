@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Irrlicht" Database="">
-  <Project Name="Liero3DTest" Path="Liero3DTest/Liero3DTest.project" Active="No"/>
-  <Project Name="Liero3DCore" Path="Liero3DCore/Liero3DCore.project" Active="Yes"/>
+  <Project Name="Liero3DCore" Path="Liero3DCore/Liero3DCore.project" Active="No"/>
+  <Project Name="Liero3DTest" Path="Liero3DTest/Liero3DTest.project" Active="Yes"/>
   <Project Name="Liero3DMain" Path="Liero3DMain/Liero3DMain.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Project Name="Irrlicht" ConfigName="Debug"/>
-      <Project Name="Liero3DTest" ConfigName="Debug"/>
       <Project Name="Liero3DCore" ConfigName="Debug"/>
+      <Project Name="Liero3DTest" ConfigName="Debug"/>
       <Project Name="Liero3DMain" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Project Name="Irrlicht" ConfigName="Release"/>
-      <Project Name="Liero3DTest" ConfigName="Release"/>
       <Project Name="Liero3DCore" ConfigName="Release"/>
+      <Project Name="Liero3DTest" ConfigName="Release"/>
       <Project Name="Liero3DMain" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>

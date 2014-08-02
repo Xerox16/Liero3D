@@ -178,6 +178,9 @@
       </Completion>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="assets">
+    <File Name="assets/debug.json"/>
+  </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
   <Dependencies Name="Test"/>

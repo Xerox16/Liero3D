@@ -1,50 +1,25 @@
 #ifndef MESSAGES_H
 #define MESSAGES_H
 
-#include <string>
-
 #include "messagingsystem.h"
-#include "constants.h"
-
-class Entity;
-class Object;
 
 /* CONTEXTS */
 
-struct EntityContext {
-	Entity* entity_;
+struct UserInputContext {
+	int action;
 };
 
 /* CONTEXTS END */
 
 /* LISTENERS + SOURCES */
 
-struct PositionListener {
-	virtual void positionChanged(Entity* entity) = 0;
-};
+struct UserInputListener {
+	virtual void keyPressed(int action) = 0;
+}
 
-typedef
-Messaging<PositionListener, EntityContext>
-PositionSource;
-
-struct MovementListener {
-	virtual void entityMoved(Entity* entity) = 0;
-};
-
-typedef
-Messaging<MovementListener, EntityContext>
-MovementSource;
+typedef Messaging<UserInputListener, UserInputContext> UserInputSource;
 
 
-struct ShotListener {
-	virtual void weaponFired(Entity* weapon) = 0;
-};
-
-typedef
-Messaging<ShotListener, EntityContext>
-ShotSource;
-
-
-
+/* LISTENERS + SOURCES END*/
 
 #endif // MESSAGES_H
