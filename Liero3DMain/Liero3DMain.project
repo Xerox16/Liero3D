@@ -27,9 +27,9 @@
   <Dependencies/>
   <VirtualDirectory Name="include"/>
   <VirtualDirectory Name="src">
-    <File Name="main.cpp" ExcludeProjConfig=""/>
+    <File Name="main.cpp" ExcludeProjConfig="Debug"/>
     <File Name="polyvox_integration.cpp" ExcludeProjConfig="Debug"/>
-    <File Name="irrlicht_minimal.cpp" ExcludeProjConfig="Debug"/>
+    <File Name="irrlicht_minimal.cpp" ExcludeProjConfig=""/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

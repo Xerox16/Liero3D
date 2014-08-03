@@ -1,55 +1,127 @@
 #include <irrlicht.h>
+#include "utilities.h"
+#include "event_receiver.h"
 
 using namespace irr;
-using namespace core;
-using namespace video;
-using namespace scene;
 
-int main() {
-	IrrlichtDevice* device = createDevice(video::EDT_OPENGL, dimension2d<u32>(1024, 768), 32, false, false, false, 0);
-	IVideoDriver* driver = device->getVideoDriver();
-	ISceneManager* smgr = device->getSceneManager();
-	
-	if(!device) {
-		return 1;
+int main()
+{
+	// create device
+	EventReceiver receiver;
+
+	IrrlichtDevice* device = IrrlichtUtilities::initialize(640, 480, 0, &receiver);
+
+	if (device == 0)
+		return 1; // could not create selected driver.
+
+	video::IVideoDriver* driver = device->getVideoDriver();
+	scene::ISceneManager* smgr = device->getSceneManager();
+
+	scene::ISceneNode * node = smgr->addSphereSceneNode();
+	if (node) {
+		node->setPosition(core::vector3df(0,0,30));
+		node->setMaterialTexture(0, driver->getTexture("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/wall.bmp"));
+		node->setMaterialFlag(video::EMF_LIGHTING, false);
 	}
-	
+
+	scene::ISceneNode* n = smgr->addCubeSceneNode();
+
+	if (n) {
+		n->setMaterialTexture(0, driver->getTexture("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/t351sml.jpg"));
+		n->setMaterialFlag(video::EMF_LIGHTING, false);
+		scene::ISceneNodeAnimator* anim =
+		    smgr->createFlyCircleAnimator(core::vector3df(0,0,50), 30.0f);
+		if (anim) {
+			n->addAnimator(anim);
+			anim->drop();
+		}
+	}
+
+	scene::IAnimatedMeshSceneNode* anms =
+	    smgr->addAnimatedMeshSceneNode(smgr->getMesh("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/ninja.b3d"));
+
+	if (anms) {
+		scene::ISceneNodeAnimator* anim =
+		    smgr->createFlyStraightAnimator(core::vector3df(100,0,60),
+		                                    core::vector3df(-100,200,220), 100000, true);
+		if (anim) {
+			anms->addAnimator(anim);
+			anim->drop();
+		}
+
+		anms->setMaterialFlag(video::EMF_LIGHTING, false);
+
+		anms->setFrameLoop(0, 13);
+		anms->setAnimationSpeed(15);
+//      anms->setMD2Animation(scene::EMAT_RUN);
+
+		anms->setScale(core::vector3df(2.f,2.f,2.f));
+		anms->setRotation(core::vector3df(0,-90,0));
+//      anms->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
+
+	}
+
+	smgr->addCameraSceneNodeFPS();
 	device->getCursorControl()->setVisible(false);
-	
-	scene::IMesh* mesh = smgr->getMesh("/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DMain/assets/Cucco/Cucco.3ds");
-	if(!mesh) {
-		device->drop();
-		return 1;
-	}
-	
-	scene::IMeshSceneNode* node = smgr->addMeshSceneNode(mesh);
-	if(node) {
-		//node->setMaterialFlag(EMF_LIGHTING, false);
-	}
-	
-   scene::IBillboardSceneNode* billboard = smgr->addBillboardSceneNode(NULL, dimension2d<f32>(32, 32));
-   
-   billboard->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-   billboard->setMaterialTexture(0, driver->getTexture("/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DMain/assets/Cucco/CuccSS00.tga"));
-   billboard->setMaterialFlag(video::EMF_LIGHTING, false);
-	
-	scene::ILightSceneNode* light = smgr->addLightSceneNode(billboard, core::vector3df(1000,0,0), video::SColorf(1.0f, 0.5f, 1.0f), 800.f);
-	
-	ISceneNodeAnimator* anim = smgr->createFlyCircleAnimator(core::vector3df(0,5,30), 100.0f);
-	billboard->addAnimator(anim);
-	anim->drop();
 
-	
-   ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(NULL, 50.0f, 0.15f);
-   
+	device->getGUIEnvironment()->addImage(
+	    driver->getTexture("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/irrlichtlogoalpha2.tga"),
+	    core::position2d<s32>(10,20));
+
+	/*gui::IGUIStaticText* diagnostics = device->getGUIEnvironment()->addStaticText(
+	                                       L"", core::rect<s32>(10, 10, 400, 20));
+	diagnostics->setOverrideColor(video::SColor(255, 255, 255, 0));*/
+
+int lastFPS = -1;
+
+	// In order to do framerate independent movement, we have to know
+	// how long it was since the last frame
+	u32 then = device->getTimer()->getTime();
+
+	// This is the movemen speed in units per second.
+	const f32 MOVEMENT_SPEED = 5.f;
+
 	while(device->run()) {
-		driver->beginScene(true, true, video::SColor(255,0,0,0));
+		// Work out a frame delta time.
+		const u32 now = device->getTimer()->getTime();
+		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
+		then = now;
 		
-		smgr->drawAll();
-		
+		core::vector3df nodePosition = node->getPosition();
+
+		if(receiver.isKeyDown(irr::KEY_KEY_W))
+			nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
+		else if(receiver.isKeyDown(irr::KEY_KEY_S))
+			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
+
+		if(receiver.isKeyDown(irr::KEY_KEY_A))
+			nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
+		else if(receiver.isKeyDown(irr::KEY_KEY_D))
+			nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
+
+		node->setPosition(nodePosition);
+
+		driver->beginScene(true, true, video::SColor(255,113,113,133));
+
+		smgr->drawAll(); // draw the 3d scene
+		device->getGUIEnvironment()->drawAll(); // draw the gui environment (the logo)
+
 		driver->endScene();
+
+		int fps = driver->getFPS();
+
+		if (lastFPS != fps) {
+			core::stringw tmp(L"Movement Example - Irrlicht Engine [");
+			tmp += driver->getName();
+			tmp += L"] fps: ";
+			tmp += fps;
+
+			device->setWindowCaption(tmp.c_str());
+			lastFPS = fps;
+		}
 	}
-	
+
 	device->drop();
+
 	return 0;
 }

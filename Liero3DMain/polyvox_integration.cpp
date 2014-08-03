@@ -170,9 +170,9 @@ int main()
 	testMesh->addMeshBuffer(testBuffer);
 	testMesh->recalculateBoundingBox();
 
-	ISceneNode* meshNode = smgr->addMeshSceneNode(testMesh, 0, 0, vector3df(0, 0, 0), vector3df(0, 0, 0),vector3df(1.0F, 1.0F, 1.0F));
+	ISceneNode* meshNode = smgr->addOctreeSceneNode(testMesh, 0, -1, 1024);//smgr->addMeshSceneNode(testMesh, 0, 0, vector3df(0, 0, 0), vector3df(0, 0, 0),vector3df(1.0F, 1.0F, 1.0F));
 	if(meshNode) {
-		meshNode->setMaterialType(video::EMT_REFLECTION_2_LAYER);
+		//meshNode->setMaterialType(video::EMT_REFLECTION_2_LAYER);
 		meshNode->setMaterialFlag(video::EMF_LIGHTING, false);
 	}
 
@@ -216,6 +216,7 @@ int main()
 	more. This would be when the user closes the window or presses ALT+F4
 	(or whatever keycode closes a window).
 	*/
+	int primitivesDrawnLast = -1;
 	
 	while(device->run()) {
 		const int now = device->getTimer()->getTime();
@@ -235,6 +236,14 @@ int main()
 		guienv->drawAll();
 
 		driver->endScene();
+		
+		int primitivesDrawn = driver->getPrimitiveCountDrawn();
+		if(primitivesDrawn != primitivesDrawnLast) {
+			stringw str = L"IrrlichtExample [Primitives Drawn: ";
+			str += primitivesDrawn;
+			str += "]";
+			device->setWindowCaption(str.c_str());
+		}
 
 	}
 
