@@ -5,19 +5,23 @@
 
 /* CONTEXTS */
 
-struct UserInputContext {
-	int action;
+struct ActionInputContext {
+	//refers to UserControls::Action
+	int action_;
+	//wether button was already pressed during the last frame
+	bool wasDown_;
 };
 
 /* CONTEXTS END */
 
 /* LISTENERS + SOURCES */
 
-struct UserInputListener {
-	virtual void keyPressed(int action) = 0;
-}
+struct ActionInputListener {
+	virtual void buttonDown(int action, bool wasDown) = 0;
+	//virtual void mouseMoved() = 0;
+};
 
-typedef Messaging<UserInputListener, UserInputContext> UserInputSource;
+typedef Messaging<ActionInputListener, ActionInputContext> ActionInputSource;
 
 
 /* LISTENERS + SOURCES END*/

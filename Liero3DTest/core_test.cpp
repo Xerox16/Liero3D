@@ -4,6 +4,7 @@
 #include <string>
 
 #include <boost/test/unit_test.hpp>
+#include <boost/log/trivial.hpp>
 #include <boost/exception/all.hpp>
 
 #include "utilities.h"
@@ -185,6 +186,32 @@ BOOST_AUTO_TEST_CASE(event_receiver_test)
 	BOOST_REQUIRE(eventReceiver.wasKeyDown(irr::KEY_KEY_Q) == false);
 }
 
+//set up messaging environment for controls test
+struct ActionInputDebugListener : public ActionInputListener {
+	ActionInputDebugListener() :
+	action_(0), wasDown_(false) {
+	}
+	
+	void buttonDown(int action, bool wasDown) {
+		action_ = action;
+		wasDown_ = wasDown;
+		
+		if(!wasDown) {
+			BOOST_LOG_TRIVIAL(debug)<<"button performing "<<UserControls::actions_[action]<<"-action pushed";
+		} else {
+			BOOST_LOG_TRIVIAL(debug)<<"button performing "<<UserControls::actions_[action]<<"-action held down";
+		}
+	}
+	
+	void reset() {
+		action_ = 0;
+		wasDown_ = false;
+	}
+	
+	int action_;
+	bool wasDown_;
+};
+
 BOOST_AUTO_TEST_CASE(controls_test)
 {
 	Key2String k2s;
@@ -196,17 +223,44 @@ BOOST_AUTO_TEST_CASE(controls_test)
 	//check getKey
 	BOOST_REQUIRE_EQUAL(k2s.getKey("KEY_UP"), irr::KEY_UP);
 	BOOST_REQUIRE_EQUAL(k2s.getKey("KEY_KEY_0"), irr::KEY_KEY_0);
-	BOOST_REQUIRE_THROW(k2s.getKey("no_valid_identifier"), BasicException);
+	BOOST_REQUIRE_THROW(k2s.getKey("no_valid_identifier")	, BasicException);
 	
 	UserControls controls;
 	
 	//construct empty configuration
 	Configuration config;
-	//load config file
 	config.load("../assets/debug.json");
-	//test loadProfile
 	controls.loadProfile("test", config, k2s);
-	//controls.loadProfile("not_listed", config, k2s);
+	
+	//set up messaging environment
+	EventReceiver eventReceiver;
+	ActionInputDebugListener listener;
+	controls.addListener(&listener);
+	
+	//test messaging behaviour
+	
+	controls.updateInput(eventReceiver);
+	BOOST_REQUIRE_EQUAL(listener.action_, 0);
+	BOOST_REQUIRE_EQUAL(listener.wasDown_, false);
+	
+	eventReceiver.setKeyDown(irr::KEY_DOWN, true);
+	
+	controls.updateInput(eventReceiver);
+	BOOST_REQUIRE_EQUAL(listener.action_, UserControls::DOWN);
+	BOOST_REQUIRE_EQUAL(listener.wasDown_, false);
+	listener.reset();
+	
+	controls.updateInput(eventReceiver);
+	BOOST_REQUIRE_EQUAL(listener.action_, UserControls::DOWN);
+	BOOST_REQUIRE_EQUAL(listener.wasDown_, true);
+	listener.reset();
+	
+	eventReceiver.setKeyDown(irr::KEY_DOWN, false);
+	
+	controls.updateInput(eventReceiver);
+	BOOST_REQUIRE_EQUAL(listener.action_, 0);
+	BOOST_REQUIRE_EQUAL(listener.wasDown_, false);
+	listener.reset();	
 }
 
 BOOST_AUTO_TEST_SUITE_END()

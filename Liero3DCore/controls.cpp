@@ -15,7 +15,7 @@ Key2String::Key2String()
 	//define helper typedefs
 	typedef boost::bimap<std::string,irr::EKEY_CODE> bimap;
 	typedef bimap::value_type value_pair;
-	
+
 	//initialize vector of value pairs with initializer list since boost::bimap does not support initializer lists
 	std::vector<value_pair> v = {
 		{"KEY_LBUTTON", KEY_LBUTTON}, // Left mouse button
@@ -183,8 +183,8 @@ const std::string& Key2String::getString(irr::EKEY_CODE key) const
 	if(iter == keys_.right.end()) {
 		std::string error("Key2String: Failed to to fetch string with key " + std::to_string(key) + " from map!");
 		throw BasicException(error);
-	} 
-		
+	}
+
 	BOOST_LOG_TRIVIAL(debug)<<"Fetched "<<iter->second<<" with key "<<key<<" from map!";
 
 
@@ -199,7 +199,7 @@ irr::EKEY_CODE Key2String::getKey(const std::string& string_) const
 		std::string error("Key2String: Failed to to fetch key with " + string_ + " from map!");
 		throw BasicException(error);
 	}
-	
+
 	BOOST_LOG_TRIVIAL(debug)<<"Fetched "<<iter->second<<" with string "<<string_<<" from map!";
 
 	return iter->second;
@@ -212,9 +212,15 @@ const std::array<std::string, UserControls::ACTION_COUNT> UserControls::actions_
 };
 
 
-void UserControls::loadProfile(const std::string& profile, const Configuration& configuration, const Key2String& k2s) {
+void UserControls::dispatchEvent(ActionInputListener *listener,  const ActionInputContext &context)
+{
+	listener->buttonDown(context.action_, context.wasDown_);
+}
+
+void UserControls::loadProfile(const std::string& profile, const Configuration& configuration, const Key2String& k2s)
+{
 	keys_.clear();
-	
+
 	//load key string from configuration, translate it to irrlicht hex value, store hex value in key vector
 	for(auto iter = actions_.begin(); iter != actions_.end(); ++iter) {
 		//build configuration string
@@ -225,4 +231,22 @@ void UserControls::loadProfile(const std::string& profile, const Configuration& 
 	}
 }
 
+void UserControls::updateInput(EventReceiver& eventReceiver)
+{
+	//handle keyboard
+	for(int i = 0; i < ACTION_COUNT; ++i) {
+		if(eventReceiver.isKeyDown(keys_[i])) {
+			ActionInputContext context;
+			context.action_ = i;
 
+			//deprel keys
+			if(eventReceiver.wasKeyDown(keys_[i])) {
+				context.wasDown_ = true;
+			} else {
+				context.wasDown_ = false;
+			}
+
+			ActionInputSource::raiseEvent(context);
+		}
+	}
+}
