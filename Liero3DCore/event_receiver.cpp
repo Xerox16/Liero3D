@@ -1,5 +1,7 @@
 #include "event_receiver.h"
 
+#include <boost/log/trivial.hpp>
+
 EventReceiver::EventReceiver() : keysDown_() {
 	for(int i = 0; i < irr::KEY_KEY_CODES_COUNT; ++i) {
 		keysDown_[i] = false;
@@ -15,24 +17,22 @@ bool EventReceiver::OnEvent(const irr::SEvent& event) {
 		
 	return false;
 }
-	
+
+void EventReceiver::update() {
+	for(int i = 0; i < irr::KEY_KEY_CODES_COUNT; ++i) {
+		keysAlreadyDown_[i] = keysDown_[i];
+	}
+}
+
 bool EventReceiver::isKeyDown(irr::EKEY_CODE keyCode) const {
 	return keysDown_[keyCode];
 }
 
-bool EventReceiver::wasKeyDown(irr::EKEY_CODE keyCode) {
-	bool wasDown = keysAlreadyDown_[keyCode];
-	
-	if(keysDown_[keyCode]) {
-		//else check if it is pressed right now and set keys that were down accordingly
-		keysAlreadyDown_[keyCode] = true;
-	} else {
-		keysAlreadyDown_[keyCode] = false;
-	}
-		
-	return wasDown;
+bool EventReceiver::wasKeyDown(irr::EKEY_CODE keyCode) const {
+	return keysAlreadyDown_[keyCode];
 }
 
 void EventReceiver::setKeyDown(irr::EKEY_CODE keyCode, bool state) {
+	keysAlreadyDown_[keyCode] = keysDown_[keyCode];
 	keysDown_[keyCode] = state;
 }

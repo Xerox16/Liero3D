@@ -24,7 +24,6 @@ void Configuration::unload()
 int Configuration::getInt(const std::string& path) const
 {
 	int i = pt_.get<int>(path);
-	BOOST_LOG_TRIVIAL(info) << "Loaded integer with value " << i << " with path "<< path ;
 	return i;
 }
 

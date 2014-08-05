@@ -1,4 +1,5 @@
 #include <irrlicht.h>
+#include <boost/log/trivial.hpp>
 #include "utilities.h"
 #include "event_receiver.h"
 
@@ -89,8 +90,11 @@ int lastFPS = -1;
 		
 		core::vector3df nodePosition = node->getPosition();
 
-		if(receiver.isKeyDown(irr::KEY_KEY_W))
-			nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
+		if(receiver.isKeyDown(irr::KEY_KEY_W)) {
+			if(!receiver.wasKeyDown(irr::KEY_KEY_W)) {
+				BOOST_LOG_TRIVIAL(debug)<<"Key deprelled";
+			}
+		}
 		else if(receiver.isKeyDown(irr::KEY_KEY_S))
 			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
 
@@ -98,6 +102,9 @@ int lastFPS = -1;
 			nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
 		else if(receiver.isKeyDown(irr::KEY_KEY_D))
 			nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
+			
+		receiver.update();
+		
 
 		node->setPosition(nodePosition);
 

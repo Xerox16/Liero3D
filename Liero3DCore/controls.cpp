@@ -237,15 +237,8 @@ void UserControls::updateInput(EventReceiver& eventReceiver)
 	for(int i = 0; i < ACTION_COUNT; ++i) {
 		if(eventReceiver.isKeyDown(keys_[i])) {
 			ActionInputContext context;
-			context.action_ = i;
-
-			//deprel keys
-			if(eventReceiver.wasKeyDown(keys_[i])) {
-				context.wasDown_ = true;
-			} else {
-				context.wasDown_ = false;
-			}
-
+			context.action_ = i; 
+			context.wasDown_ = eventReceiver.wasKeyDown(keys_[i]);
 			ActionInputSource::raiseEvent(context);
 		}
 	}

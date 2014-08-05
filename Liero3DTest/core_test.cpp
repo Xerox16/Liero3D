@@ -188,10 +188,6 @@ BOOST_AUTO_TEST_CASE(event_receiver_test)
 
 //set up messaging environment for controls test
 struct ActionInputDebugListener : public ActionInputListener {
-	ActionInputDebugListener() :
-	action_(0), wasDown_(false) {
-	}
-	
 	void buttonDown(int action, bool wasDown) {
 		action_ = action;
 		wasDown_ = wasDown;
@@ -208,8 +204,8 @@ struct ActionInputDebugListener : public ActionInputListener {
 		wasDown_ = false;
 	}
 	
-	int action_;
-	bool wasDown_;
+	int action_ = 0;
+	bool wasDown_ = 0;
 };
 
 BOOST_AUTO_TEST_CASE(controls_test)
@@ -242,24 +238,39 @@ BOOST_AUTO_TEST_CASE(controls_test)
 	controls.updateInput(eventReceiver);
 	BOOST_REQUIRE_EQUAL(listener.action_, 0);
 	BOOST_REQUIRE_EQUAL(listener.wasDown_, false);
+	//reset listener because no message is raised when button is not down and therefore button states will not be updated otherwhise
+	listener.reset();
 	
 	eventReceiver.setKeyDown(irr::KEY_DOWN, true);
 	
 	controls.updateInput(eventReceiver);
 	BOOST_REQUIRE_EQUAL(listener.action_, UserControls::DOWN);
 	BOOST_REQUIRE_EQUAL(listener.wasDown_, false);
+	eventReceiver.update();
 	listener.reset();
+	
+	eventReceiver.setKeyDown(irr::KEY_DOWN, true);
 	
 	controls.updateInput(eventReceiver);
 	BOOST_REQUIRE_EQUAL(listener.action_, UserControls::DOWN);
 	BOOST_REQUIRE_EQUAL(listener.wasDown_, true);
+	eventReceiver.update();
 	listener.reset();
 	
 	eventReceiver.setKeyDown(irr::KEY_DOWN, false);
 	
 	controls.updateInput(eventReceiver);
-	BOOST_REQUIRE_EQUAL(listener.action_, 0);
-	BOOST_REQUIRE_EQUAL(listener.wasDown_, false);
+	BOOST_CHECK_EQUAL(listener.action_, 0);
+	BOOST_CHECK_EQUAL(listener.wasDown_, true);
+	eventReceiver.update();
+	listener.reset();
+	
+	eventReceiver.setKeyDown(irr::KEY_DOWN, false);
+	
+	controls.updateInput(eventReceiver);
+	BOOST_CHECK_EQUAL(listener.action_, 0);
+	BOOST_CHECK_EQUAL(listener.wasDown_, false);
+	eventReceiver.update();
 	listener.reset();	
 }
 
