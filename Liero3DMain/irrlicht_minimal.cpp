@@ -1,117 +1,222 @@
 #include <irrlicht.h>
+
 #include <boost/log/trivial.hpp>
+
+#include <math.h>
+#include <sstream>
+
 #include "utilities.h"
+#include "config.h"
 #include "event_receiver.h"
 
 using namespace irr;
+using namespace gui;
+using namespace core;
+using namespace scene;
+
+enum {
+    // I use this ISceneNode ID to indicate a scene node that is
+    // not pickable by getSceneNodeAndCollisionPointFromRay()
+    ID_IsNotPickable = 0,
+
+    // I use this flag in ISceneNode IDs to indicate that the
+    // scene node can be picked by ray selection.
+    IDFlag_IsPickable = 1 << 0,
+
+    // I use this flag in ISceneNode IDs to indicate that the
+    // scene node can be highlighted.  In this example, the
+    // homonids can be highlighted, but the level mesh can't.
+    IDFlag_IsHighlightable = 1 << 1
+};
+
+enum Menu {
+    MENU_SINGLEPLAYER,
+    MENU_MULTIPLAYER,
+    MENU_OPTION
+};
+
+// Declare a structure to hold some context for the event receiver so that it
+// has it available inside its OnEvent() method.
+struct SAppContext {
+	IrrlichtDevice *device_;
+	Menu id_;
+};
+
+// Define some values that we'll use to identify individual GUI controls.
+enum {
+    GUI_ID_QUIT_BUTTON = 101,
+    GUI_ID_NEW_WINDOW_BUTTON,
+    GUI_ID_FILE_OPEN_BUTTON,
+    GUI_ID_TRANSPARENCY_SCROLL_BAR,
+    GUI_ID_SINGLEPLAYER_BUTTON,
+    GUI_ID_MULTIPLAYER_BUTTON,
+    GUI_ID_OPTION_BUTTON
+};
+
+
+ICameraSceneNode* camera = NULL;
+ITriangleSelector* selector = NULL;
+
+
+class MyEventReceiver : public IEventReceiver
+{
+public:
+	MyEventReceiver(SAppContext* context) : context_(context) { }
+
+	virtual bool OnEvent(const SEvent& event) {
+		if (event.EventType == EET_GUI_EVENT) {
+			s32 id = event.GUIEvent.Caller->getID();
+
+			switch(event.GUIEvent.EventType) {
+			case EGET_BUTTON_CLICKED:
+				switch(id) {
+
+				case GUI_ID_SINGLEPLAYER_BUTTON:
+					context_->id_ = MENU_SINGLEPLAYER;
+					return true;
+
+				case GUI_ID_MULTIPLAYER_BUTTON:
+					context_->id_ = MENU_MULTIPLAYER;
+					return true;
+
+				case GUI_ID_OPTION_BUTTON:
+					context_->id_ = MENU_OPTION;
+					return true;
+					
+				case GUI_ID_QUIT_BUTTON:
+					context_->device_->closeDevice();
+					return true;
+
+				default:
+					return false;
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
+
+		return false;
+	}
+
+private:
+	SAppContext* context_;
+};
 
 int main()
 {
 	// create device
-	EventReceiver receiver;
+	EventReceiver receiver1;
+	Configuration config;
+	config.load("../assets/settings.json");
 
-	IrrlichtDevice* device = IrrlichtUtilities::initialize(640, 480, 0, &receiver);
+	IrrlichtDevice* device = IrrlichtUtilities::initialize(640, 480, 0, &receiver1);
 
 	if (device == 0)
 		return 1; // could not create selected driver.
 
 	video::IVideoDriver* driver = device->getVideoDriver();
 	scene::ISceneManager* smgr = device->getSceneManager();
+	gui::IGUIEnvironment* env = device->getGUIEnvironment();
 
-	scene::ISceneNode * node = smgr->addSphereSceneNode();
-	if (node) {
-		node->setPosition(core::vector3df(0,0,30));
-		node->setMaterialTexture(0, driver->getTexture("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/wall.bmp"));
-		node->setMaterialFlag(video::EMF_LIGHTING, false);
+
+	IGUISkin* skin = env->getSkin();
+	IGUIFont* font = env->getFont("../../media/fonthaettenschweiler.bmp");
+	if (font)
+		skin->setFont(font);
+
+	skin->setFont(env->getBuiltInFont(), EGDF_TOOLTIP);
+
+	env->addButton(rect<s32>(640/2 - 120, 140, 640/2 + 120, 190), 0, GUI_ID_SINGLEPLAYER_BUTTON,
+	               L"Singleplayer", L"Heavy fights against the CPU");
+
+	env->addButton(rect<s32>(640/2 - 120, 140, 640/2 + 120, 190), 0, GUI_ID_SINGLEPLAYER_BUTTON,
+	               L"Singleplayer", L"Heavy fights against the CPU");
+	env->addButton(rect<s32>(640/2 - 120, 210, 640/2 + 120, 260), 0, GUI_ID_MULTIPLAYER_BUTTON,
+	               L"Multiplayer", L"Not available yet");
+	env->addButton(rect<s32>(640/2 - 120, 280, 640/2 + 120, 330), 0, GUI_ID_OPTION_BUTTON,
+	               L"Options", L"Adjust ingame options");
+	env->addButton(rect<s32>(640/2 - 120, 350, 640/2 + 120, 400), 0, GUI_ID_QUIT_BUTTON,
+	               L"Quit", L"Exits Program");
+
+
+
+	// Store the appropriate data in a context structure.
+	SAppContext context;
+	context.device_ = device;
+
+	// Then create the event receiver, giving it that context structure.
+	MyEventReceiver receiver(&context);
+
+	// And tell the device to use our custom event receiver.
+	device->setEventReceiver(&receiver);
+
+
+	device->getFileSystem()->addFileArchive("../../media/map-20kdm2.pk3");
+
+	scene::IAnimatedMesh* mesh = smgr->getMesh("../../media/20kdm2.bsp");
+	scene::IMeshSceneNode* node = NULL;
+
+	if(mesh) {
+		node = smgr->addOctTreeSceneNode(mesh->getMesh(0), 0, -1, 1024);
 	}
 
-	scene::ISceneNode* n = smgr->addCubeSceneNode();
 
-	if (n) {
-		n->setMaterialTexture(0, driver->getTexture("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/t351sml.jpg"));
-		n->setMaterialFlag(video::EMF_LIGHTING, false);
-		scene::ISceneNodeAnimator* anim =
-		    smgr->createFlyCircleAnimator(core::vector3df(0,0,50), 30.0f);
-		if (anim) {
-			n->addAnimator(anim);
+	if(node) {
+		node->setPosition(core::vector3df(-1300, -144, -1249));
+		selector = smgr->createOctreeTriangleSelector(node->getMesh(), node, 128);
+		node->setTriangleSelector(selector);
+	}
+
+	camera = smgr->addCameraSceneNode();
+	if(camera) {
+		ISceneNodeAnimator* anim = smgr->createFlyCircleAnimator(vector3df(0,0,30), 20.0f);
+		if(anim) {
+			camera->addAnimator(anim);
 			anim->drop();
 		}
 	}
 
-	scene::IAnimatedMeshSceneNode* anms =
-	    smgr->addAnimatedMeshSceneNode(smgr->getMesh("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/ninja.b3d"));
 
-	if (anms) {
-		scene::ISceneNodeAnimator* anim =
-		    smgr->createFlyStraightAnimator(core::vector3df(100,0,60),
-		                                    core::vector3df(-100,200,220), 100000, true);
-		if (anim) {
-			anms->addAnimator(anim);
-			anim->drop();
-		}
-
-		anms->setMaterialFlag(video::EMF_LIGHTING, false);
-
-		anms->setFrameLoop(0, 13);
-		anms->setAnimationSpeed(15);
-//      anms->setMD2Animation(scene::EMAT_RUN);
-
-		anms->setScale(core::vector3df(2.f,2.f,2.f));
-		anms->setRotation(core::vector3df(0,-90,0));
-//      anms->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
-
-	}
-
-	smgr->addCameraSceneNodeFPS();
-	device->getCursorControl()->setVisible(false);
-
-	device->getGUIEnvironment()->addImage(
-	    driver->getTexture("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/irrlichtlogoalpha2.tga"),
-	    core::position2d<s32>(10,20));
-
-	/*gui::IGUIStaticText* diagnostics = device->getGUIEnvironment()->addStaticText(
-	                                       L"", core::rect<s32>(10, 10, 400, 20));
-	diagnostics->setOverrideColor(video::SColor(255, 255, 255, 0));*/
-
-int lastFPS = -1;
+	int lastFPS = -1;
 
 	// In order to do framerate independent movement, we have to know
 	// how long it was since the last frame
 	u32 then = device->getTimer()->getTime();
 
-	// This is the movemen speed in units per second.
-	const f32 MOVEMENT_SPEED = 5.f;
 
 	while(device->run()) {
-		// Work out a frame delta time.
-		const u32 now = device->getTimer()->getTime();
-		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
-		then = now;
-		
-		core::vector3df nodePosition = node->getPosition();
-
-		if(receiver.isKeyDown(irr::KEY_KEY_W)) {
-			if(!receiver.wasKeyDown(irr::KEY_KEY_W)) {
-				BOOST_LOG_TRIVIAL(debug)<<"Key deprelled";
+		if(context.id_ == MENU_SINGLEPLAYER) {
+			//switch to ingame camera
+			if(camera) {
+				smgr->setActiveCamera(0);
+				camera->remove();
 			}
+
+			camera = smgr->addCameraSceneNodeFPS(0, 100.0f, .3f, ID_IsNotPickable, 0, 0, true, 3.f);
+			camera->setPosition(vector3df(50, 50,-60));
+			camera->setTarget(vector3df(-70,30,-60));
+
+			if(selector) {
+				scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator(
+				                                      selector, camera, core::vector3df(30,50,30),
+				                                      core::vector3df(0,-10,0), core::vector3df(0,30,0));
+				selector->drop(); // As soon as we're done with the selector, drop it.
+				camera->addAnimator(anim);
+				anim->drop();  // And likewise, drop the animator when we're done referring to it.
+			}
+
+			device->getCursorControl()->setVisible(false);
+
+			//delete gui
+			env->clear();
 		}
-		else if(receiver.isKeyDown(irr::KEY_KEY_S))
-			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
 
-		if(receiver.isKeyDown(irr::KEY_KEY_A))
-			nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
-		else if(receiver.isKeyDown(irr::KEY_KEY_D))
-			nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
-			
-		receiver.update();
-		
-
-		node->setPosition(nodePosition);
-
-		driver->beginScene(true, true, video::SColor(255,113,113,133));
+		driver->beginScene(true, true, video::SColor(255,80,80,80));
 
 		smgr->drawAll(); // draw the 3d scene
-		device->getGUIEnvironment()->drawAll(); // draw the gui environment (the logo)
+		env->drawAll(); // draw the gui environment (the logo)
 
 		driver->endScene();
 

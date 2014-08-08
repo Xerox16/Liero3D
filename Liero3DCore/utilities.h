@@ -2,11 +2,26 @@
 #define _LIERO_3D_UTILITIES_
 
 #include <irrlicht.h>
+#include <string>
 
-class IrrlichtUtilities
+namespace IrrlichtUtilities
+{
+
+irr::IrrlichtDevice* initialize(int widht, int height, int fullscreen, irr::IEventReceiver* eventReceiver);
+
+class CConverter
 {
 public:
-	static irr::IrrlichtDevice* initialize(int widht, int height, int fullscreen, irr::IEventReceiver* eventReceiver);
+	CConverter();
+	~CConverter();
+
+	const wchar_t* strToWchart(std::string sInput);
+	const std::string wchartToStr(const wchar_t* wInput);
+private:
+	wchar_t* m_wCharBuffer = NULL;
+
 };
+
+}
 
 #endif

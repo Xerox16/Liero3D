@@ -21,5 +21,12 @@
 			"INVENTORY": "KEY_KEY_B",
 			"MENU": "KEY_MENU"			
 		}
+	},
+	"test":
+	{
+		"a": 4.0,
+		"b": 0.5,
+		"c": 1.0,
+		"d": 1.0
 	}
 }

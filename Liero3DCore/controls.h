@@ -37,6 +37,7 @@ public:
 	    MENU,
 	    ACTION_COUNT
 	};
+	
 	static const std::array<std::string, ACTION_COUNT> actions_; //map actions to strings
 
 public:

@@ -6,7 +6,6 @@ This Game is public domain.
 */
 
 /* Uncomment to use sound */
-#define USE_IRRKLANG
 
 #include <stdio.h>
 #include <wchar.h>
@@ -107,7 +106,7 @@ int lev[3][27] ={  //level 1
 class MyEventReceiver : public IEventReceiver
 {
 public:
-	virtual bool OnEvent(SEvent event)
+	virtual bool OnEvent(const irr::SEvent& event)
 	{
 	if (!device)
 		return false;
@@ -202,7 +201,7 @@ int main()
 	root object for doing everything with the engine.
 	*/
 
-	device = createDevice( video::EDT_OPENGL, dimension2d<s32>(screenwidth, screenheight), 32,
+	device = createDevice( video::EDT_OPENGL, dimension2d<u32>(screenwidth, screenheight), 32,
 			false, true, true);
 
 	device->setWindowCaption(L"WOS 06 Game Demo - Irrlicht Engine");
@@ -389,7 +388,7 @@ void GameMenu()  // Init Game Menu
 	// Statustext
 	const int lwidth = 450;
 	const int lheight = 50;
-	core::dimension2d<int> size = device->getVideoDriver()->getScreenSize();
+	core::dimension2d<u32> size = device->getVideoDriver()->getScreenSize();
 	core::rect<int> pos(10, size.Height-lheight-10, 10+lwidth, size.Height-10);
 	env->addImage(pos);
 

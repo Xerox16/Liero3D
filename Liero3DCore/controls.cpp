@@ -214,7 +214,7 @@ const std::array<std::string, UserControls::ACTION_COUNT> UserControls::actions_
 
 void UserControls::dispatchEvent(ActionInputListener *listener,  const ActionInputContext &context)
 {
-	listener->buttonDown(context.action_, context.wasDown_);
+	listener->buttonStateChanged(context.action_, context.isDown_, context.wasDown_);
 }
 
 void UserControls::loadProfile(const std::string& profile, const Configuration& configuration, const Key2String& k2s)
@@ -235,11 +235,10 @@ void UserControls::updateInput(EventReceiver& eventReceiver)
 {
 	//handle keyboard
 	for(int i = 0; i < ACTION_COUNT; ++i) {
-		if(eventReceiver.isKeyDown(keys_[i])) {
-			ActionInputContext context;
-			context.action_ = i; 
-			context.wasDown_ = eventReceiver.wasKeyDown(keys_[i]);
-			ActionInputSource::raiseEvent(context);
-		}
+		ActionInputContext context;
+		context.action_ = i;
+		context.isDown_ = eventReceiver.isKeyDown(keys_[i]); 
+		context.wasDown_ = eventReceiver.wasKeyDown(keys_[i]);
+		ActionInputSource::raiseEvent(context);
 	}
 }

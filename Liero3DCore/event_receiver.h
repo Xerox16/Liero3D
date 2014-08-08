@@ -9,7 +9,7 @@ public:
 //initialize members
 	EventReceiver();
 
-
+//updates keys already down, therefore to be called after key states were read
 	void update();
 //handle keyboard events
 	virtual bool OnEvent(const irr::SEvent& event);

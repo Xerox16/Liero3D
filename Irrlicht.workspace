@@ -3,7 +3,8 @@
   <Project Name="Liero3DCore" Path="Liero3DCore/Liero3DCore.project" Active="No"/>
   <Project Name="Liero3DTest" Path="Liero3DTest/Liero3DTest.project" Active="Yes"/>
   <Project Name="Liero3DMain" Path="Liero3DMain/Liero3DMain.project" Active="No"/>
-  <Project Name="Arkanoid" Path="arkanoid/Arkanoid.project"/>
+  <Project Name="Arkanoid" Path="arkanoid/Arkanoid.project" Active="No"/>
+  <Project Name="Liero3DEntitySystem" Path="Liero3DEntitySystem/Liero3DEntitySystem.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Project Name="Irrlicht" ConfigName="Debug"/>
@@ -11,6 +12,7 @@
       <Project Name="Liero3DTest" ConfigName="Debug"/>
       <Project Name="Liero3DMain" ConfigName="Debug"/>
       <Project Name="Arkanoid" ConfigName="Debug"/>
+      <Project Name="Liero3DEntitySystem" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Project Name="Irrlicht" ConfigName="Release"/>
@@ -18,6 +20,7 @@
       <Project Name="Liero3DTest" ConfigName="Release"/>
       <Project Name="Liero3DMain" ConfigName="Release"/>
       <Project Name="Arkanoid" ConfigName="Release"/>
+      <Project Name="Liero3DEntitySystem" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

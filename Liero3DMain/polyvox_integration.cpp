@@ -170,10 +170,10 @@ int main()
 	testMesh->addMeshBuffer(testBuffer);
 	testMesh->recalculateBoundingBox();
 
-	ISceneNode* meshNode = smgr->addOctreeSceneNode(testMesh, 0, -1, 1024);//smgr->addMeshSceneNode(testMesh, 0, 0, vector3df(0, 0, 0), vector3df(0, 0, 0),vector3df(1.0F, 1.0F, 1.0F));
+	ISceneNode* meshNode = smgr->addMeshSceneNode(testMesh, 0, 0, vector3df(0, 0, 0), vector3df(0, 0, 0),vector3df(1.0F, 1.0F, 1.0F));
 	if(meshNode) {
 		//meshNode->setMaterialType(video::EMT_REFLECTION_2_LAYER);
-		meshNode->setMaterialFlag(video::EMF_LIGHTING, false);
+		meshNode->setMaterialTexture(0, driver->getTexture("/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DMain/assets/assets/minecraft/textures/blocks/log_jungle.png"));
 	}
 
 

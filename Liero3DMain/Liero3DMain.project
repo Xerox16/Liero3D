@@ -29,11 +29,9 @@
   <VirtualDirectory Name="src">
     <File Name="main.cpp" ExcludeProjConfig="Debug"/>
     <File Name="polyvox_integration.cpp" ExcludeProjConfig="Debug"/>
-    <File Name="irrlicht_minimal.cpp" ExcludeProjConfig=""/>
+    <File Name="irrlicht_minimal.cpp" ExcludeProjConfig="Debug"/>
+    <File Name="colisionDetection.cpp"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
-  <Dependencies Name="Test"/>
   <VirtualDirectory Name="assets">
     <File Name="assets/settings.json"/>
   </VirtualDirectory>
@@ -191,4 +189,7 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <Dependencies Name="Test"/>
 </CodeLite_Project>

@@ -7,9 +7,11 @@
 
 struct ActionInputContext {
 	//refers to UserControls::Action
-	int action_;
-	//wether button was already pressed during the last frame
-	bool wasDown_;
+	int action_ = 0;
+	//whether button is down
+	bool isDown_ = false;
+	//whether button was already down during the last frame
+	bool wasDown_ = false;
 };
 
 /* CONTEXTS END */
@@ -17,7 +19,7 @@ struct ActionInputContext {
 /* LISTENERS + SOURCES */
 
 struct ActionInputListener {
-	virtual void buttonDown(int action, bool wasDown) = 0;
+	virtual void buttonStateChanged(int action, bool isDown, bool wasDown) = 0;
 	//virtual void mouseMoved() = 0;
 };
 

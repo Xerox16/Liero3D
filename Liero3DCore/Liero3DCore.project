@@ -43,9 +43,6 @@
     <File Name="event_receiver.cpp"/>
     <File Name="controls.cpp" ExcludeProjConfig=""/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
-  <Dependencies Name="Test"/>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -60,6 +57,7 @@
       <Compiler Options="-g;-O0;-Wall;-fno-inline;-std=c++0x;-DBOOST_ALL_DYN_LINK;-shared" C_Options="-g;-O0;-Wall;-fno-inline" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="."/>
         <IncludePath Value="/usr/include/irrlicht"/>
+        <IncludePath Value="/home/xerox/Programmierung/Bibliotheken/utf8/source/utf8.h"/>
       </Compiler>
       <Linker Options="" Required="yes">
         <Library Value="Irrlicht"/>
@@ -192,4 +190,7 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <Dependencies Name="Test"/>
 </CodeLite_Project>
