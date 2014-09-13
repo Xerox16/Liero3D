@@ -15,7 +15,7 @@ void Action::apply() {
         //BOOST_THROW_EXCEPTION(core::exception::AccessViolationException("Failed to apply action! Invalid \"user_\"-pointer!"));
     }
 
-    //apply action to target, if target is NULL then action is applied to user
+    //apply action to target if defined, otherwhise to user
     if(target_) {
         apply(target_);
     } else {

@@ -35,7 +35,7 @@
     <File Name="action.cpp" ExcludeProjConfig=""/>
     <File Name="state.cpp" ExcludeProjConfig=""/>
     <File Name="space.cpp" ExcludeProjConfig=""/>
-    <File Name="entity.cpp" ExcludeProjConfig="Debug"/>
+    <File Name="entity.inc"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>

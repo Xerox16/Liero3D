@@ -7,7 +7,7 @@ Entity::Entity() :  key_(-1), space_(), states_(), actions_(), updatedActions_()
 {
 }
 
-Entity::Entity(const Entity& rhs) : key_(rhs.key_), states_(), actions_(), updatedActions_(rhs.updatedActions_.begin(), rhs.updatedActions_.end())
+Entity::Entity(const Entity& rhs) : key_(rhs.key_), space_(rhs.space_), states_(), actions_(), updatedActions_(rhs.updatedActions_.begin(), rhs.updatedActions_.end())
 {
 	//iterate all states
 	for(auto& state : rhs.states_) {
@@ -43,18 +43,13 @@ void Entity::setKey(long key)
 	key_ = key;
 }
 
-void Entity::setSpace(std::shared_ptr<Space> space) 
+void Entity::setSpace(Space* space) 
 {
 	space_ = space;
 }
 
-
-std::shared_ptr<Space> Entity::getSpacePtr() const {
-	return space_;
-}
-
 Space* Entity::getSpace() const {
-	return space_.get();
+	return space_;
 }
 
 void Entity::addState(std::shared_ptr<State> state)

@@ -36,11 +36,14 @@ public:
 		return new AddToInt(*this);
 	}
 	
+	int cloneTest = 0;
+	
 protected:
 	void apply(Entity* target) {
 		auto int_ = target->getState<Int>();
 		int_->i++;
 	}
+	
 };
 
 class AddToDouble : public Action {
@@ -172,18 +175,90 @@ BOOST_AUTO_TEST_CASE(entity_test)
 	BOOST_REQUIRE(entity.getSpace() 				== clone->getSpace());
 	BOOST_REQUIRE(entity.getState<Int>() 			!= clone->getState<Int>());
 	BOOST_REQUIRE(entity.getState<Double>() 		!= clone->getState<Double>());
-	BOOST_REQUIRE(entity.getState<Int>()->i 			== clone->getState<Int>()->i);
-	BOOST_REQUIRE(entity.getState<Double>()->d 		== clone->getState<Double>()->d);
+	BOOST_REQUIRE(entity.getState<Int>()->i 		== clone->getState<Int>()->i);
+	BOOST_REQUIRE(entity.getState<Double>()->d 	== clone->getState<Double>()->d);
 	BOOST_REQUIRE(entity.getAction<AddToInt>()		!= clone->getAction<AddToInt>());
 	BOOST_REQUIRE(entity.getAction<AddToDouble>() != clone->getAction<AddToDouble>());
 }
 
 BOOST_AUTO_TEST_CASE(action_test)
 {
+	
+	//create entity, state and action
+	std::shared_ptr<Entity> 		user(new Entity);
+	std::shared_ptr<Entity> 		target(new Entity);
+	std::shared_ptr<Int> 			oldInt(new Int);
+	std::shared_ptr<Int> 			newInt(new Int);
+	std::shared_ptr<AddToInt> 	addToInt(new AddToInt);
+	
+	//configure entity and action
+	user->addState(oldInt);
+	target->addState(newInt);
+	addToInt->setUser(user.get());
+	addToInt->setTarget(target.get());
+	
+	BOOST_REQUIRE(addToInt->getUser() 		== user.get());
+	BOOST_REQUIRE(addToInt->getTarget() 	== target.get());
+	
+	//apply action
+	addToInt->Action::apply();
+	
+	//if both user and target are set, action should be applied to target
+	BOOST_REQUIRE_EQUAL(oldInt->i, 0);
+	BOOST_REQUIRE_EQUAL(newInt->i, 1);	
+
+	//remove target and apply action
+	addToInt->setTarget(NULL);	
+	addToInt->Action::apply();
+	
+	//elsewhise action should be applied to user
+	BOOST_REQUIRE_EQUAL(oldInt->i, 1);
+	BOOST_REQUIRE_EQUAL(newInt->i, 1);	
+	
+	//check clone function
+	addToInt->cloneTest = 1;
+	std::shared_ptr<AddToInt> 	addToIntClone(addToInt->clone());
+	
+	BOOST_REQUIRE(addToInt.get() != addToIntClone.get());
+	BOOST_REQUIRE_EQUAL(addToIntClone->cloneTest, 1);
 }
 
 BOOST_AUTO_TEST_CASE(space_test)
 {
+	//create space with two entities
+	std::shared_ptr<Space> space(new Space);
+	std::shared_ptr<Entity>	gun(new Entity);
+	std::shared_ptr<Entity>	bullet(new Entity);
+	
+	//add entities
+	long gunKey 	 	= space->addEntity(gun);
+	long bulletKey 	= space->addEntity(bullet);
+	
+	//fetch entities
+	BOOST_REQUIRE(space->getEntity(gunKey) 	== gun.get());
+	BOOST_REQUIRE(space->getEntity(bulletKey) 	== bullet.get());
+	
+	//remove entity
+	bool success = space->removeEntity(gunKey);
+	
+	BOOST_REQUIRE(space->getEntity(gunKey) 	== NULL);
+	BOOST_REQUIRE(space->getEntity(bulletKey) 	== bullet.get());
+	BOOST_REQUIRE(success == true);
+	
+	//remove already removed entity
+	success = space->removeEntity(gunKey);
+	
+	BOOST_REQUIRE(success == false);
+	
+	//clone space
+	std::shared_ptr<Space> clone(space->clone());
+	
+	BOOST_REQUIRE(space->getEntity(gunKey) 				== clone->getEntity(gunKey));
+	BOOST_REQUIRE(space->getEntity(bulletKey) 				!= clone->getEntity(bulletKey));
+	BOOST_REQUIRE(clone->getEntity(gunKey) 				== NULL);
+	BOOST_REQUIRE(clone->getEntity(bulletKey) 				!= NULL);
+	BOOST_REQUIRE(clone->getEntity(bulletKey)->getSpace()	== clone.get()); //check if new space was set correctly
+	
 }
 
 BOOST_AUTO_TEST_SUITE_END()

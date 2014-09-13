@@ -27,8 +27,7 @@ public:
 	void setKey(long key);
 	
 	//set space entity resides in
-	void setSpace(std::shared_ptr<Space> space);
-	std::shared_ptr<Space> getSpacePtr() const;
+	void setSpace(Space* space);
 	Space* getSpace() const;
 	
 	//add entity components
@@ -58,7 +57,7 @@ public:
 
 protected:
 	long key_;
-	std::shared_ptr<Space> space_;
+	Space* space_;
 	std::map<std::type_index, std::shared_ptr<State> >  states_;
 	std::map<std::type_index, std::shared_ptr<Action> > actions_;
 	std::set<std::type_index> updatedActions_; //used actions are called every frame as long as they exist
