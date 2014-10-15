@@ -63,6 +63,6 @@ protected:
 	std::set<std::type_index> updatedActions_; //used actions are called every frame as long as they exist
 };
 
-#include "entity.cpp"
+#include "entity.inc"
 
 #endif // ENTITY_H

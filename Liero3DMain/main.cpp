@@ -18,6 +18,73 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
+scene::IAnimatedMeshSceneNode* ball;
+
+void drawPlayfield(IVideoDriver* driver, scene::ISceneManager* smgr, const Configuration& config) {
+	smgr->addSkyBoxSceneNode(
+		driver->getTexture(config.getString("skybox.top").c_str()),
+		driver->getTexture(config.getString("skybox.bottom").c_str()),
+		driver->getTexture(config.getString("skybox.left").c_str()),
+		driver->getTexture(config.getString("skybox.right").c_str()),
+		driver->getTexture(config.getString("skybox.front").c_str()),
+		driver->getTexture(config.getString("skybox.back").c_str())
+		);	
+	
+	ISceneNode* bottom = 0;
+	bottom = smgr->addCubeSceneNode(1);
+	bottom->setPosition(core::vector3df(0,-12,0));
+	bottom->setScale(core::vector3df(110,5,110));
+	bottom->setMaterialTexture(0, driver->getTexture(config.getString("textures.bottom").c_str()));
+	bottom->setMaterialFlag(video::EMF_LIGHTING, true);
+	
+		/*
+	Sides
+	*/
+	
+    scene::ISceneNode* side = 0;
+	
+	
+	side = smgr->addCubeSceneNode(1);
+	side->setPosition(core::vector3df(-52.5,-7,0));
+	side->setScale(core::vector3df(5,5,110));
+	side->setMaterialTexture(0, driver->getTexture(config.getString("textures.wall").c_str()));
+	side->setMaterialFlag(video::EMF_LIGHTING, true);
+
+	side = smgr->addCubeSceneNode(1);
+	side->setPosition(core::vector3df(52.5,-7,0));
+	side->setScale(core::vector3df(5,5,110));
+	side->setMaterialTexture(0, driver->getTexture(config.getString("textures.wall").c_str()));
+	side->setMaterialFlag(video::EMF_LIGHTING, true);
+
+	side = smgr->addCubeSceneNode(1);
+	side->setPosition(core::vector3df(0,-7,52.5));
+	side->setScale(core::vector3df(100,5,5));
+	side->setMaterialTexture(0, driver->getTexture(config.getString("textures.wall").c_str()));
+	side->setMaterialFlag(video::EMF_LIGHTING, true);
+	
+	side = smgr->addCubeSceneNode(1);
+	side->setPosition(core::vector3df(0,-7,-52.5));
+	side->setScale(core::vector3df(100,5,5));
+	side->setMaterialTexture(0, driver->getTexture(config.getString("textures.wall").c_str()));
+	side->setMaterialFlag(video::EMF_LIGHTING, true);
+	
+	    // add 2 lights
+	bottom = smgr->addLightSceneNode(0, core::vector3df(20,30,40),
+		video::SColorf(1.0f, 0.5f, 0.7f, 1.0f), 100.0f);
+
+	bottom = smgr->addLightSceneNode(0, core::vector3df(20,20,-80),
+		video::SColorf(1.0f, 0.8f, 0.2f, 1.0f), 200.0f);
+		
+		//add ball
+	IAnimatedMesh* bb = smgr->getMesh(config.getString("meshes.ball").c_str());
+	ball = smgr->addAnimatedMeshSceneNode(bb);
+	
+	ball->setMaterialTexture(0, driver->getTexture(config.getString("textures.ball").c_str()));	
+	ball->setScale(core::vector3df(1,1,1));
+	ball->setMaterialFlag(video::EMF_LIGHTING, false);
+	
+}
+
 int main()
 {
 	Configuration config;
@@ -45,21 +112,10 @@ int main()
 	video::IVideoDriver* driver = device->getVideoDriver();
 	scene::ISceneManager* sceneManager = device->getSceneManager();
 	gui::IGUIEnvironment* guiEnvironment = device->getGUIEnvironment();
-
-	device->getFileSystem()->addFileArchive("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/map-20kdm2.pk3");
-
-	scene::IAnimatedMesh* mesh = sceneManager->getMesh("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/20kdm2.bsp");
-	scene::ISceneNode* node = NULL;
-
-	if(mesh) {
-		node = sceneManager->addOctTreeSceneNode(mesh->getMesh(0), 0, -1, 1024);
-	}
-
-	if(node) {
-		node->setPosition(core::vector3df(-1300, -144, -1249));
-	}
-
-	sceneManager->addCameraSceneNode();
+	
+	drawPlayfield(driver, sceneManager, config);	
+	
+	sceneManager->addCameraSceneNodeFPS();
 	scene::ICameraSceneNode* root = sceneManager->getActiveCamera();
 
 	device->getCursorControl()->setVisible(true);
@@ -101,7 +157,7 @@ int main()
 
 
 			if(lastFPS != fps) {
-				core::stringw str = L"Irrlicht Enige - Quake 3 map example [";
+				core::stringw str = L"Irrlicht  - Breakout example [";
 				str += driver->getName();
 				str += "] FPS: ";
 				str += fps;

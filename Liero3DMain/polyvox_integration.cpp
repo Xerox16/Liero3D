@@ -67,10 +67,10 @@ irr::scene::IMeshBuffer* convertMesh(const PolyVox::SurfaceMesh<PolyVox::Positio
 	return mb;
 }
 
-void createSphereInVolume(SimpleVolume<MaterialDensityPair44>& volData, float fRadius)
+void createSphereInVolume(SimpleVolume<MaterialDensityPair44>& volData, Vector3DFloat translation, float fRadius)
 {
 	//This vector hold the position of the center of the volume
-	Vector3DFloat v3dVolCenter(volData.getWidth() / 2, volData.getHeight() / 2, volData.getDepth() / 2);
+	Vector3DFloat v3dVolCenter(translation);
 
 	//This three-level for loop iterates over every voxel in the volume
 	for (int z = 0; z < volData.getWidth(); z++) {
@@ -106,12 +106,13 @@ void createSphereInVolume(SimpleVolume<MaterialDensityPair44>& volData, float fR
 
 
 
-void createCuboid(SimpleVolume<MaterialDensityPair44>& volData, Vector3DFloat translation, Vector3DFloat cuboid)
+void createCuboid(SimpleVolume<MaterialDensityPair44>& volData, Vector3DFloat translation, Vector3DFloat size)
 {
+	
 	//This three-level for loop iterates over every voxel in the volume
-	for (int z = translation.getZ(); z < cuboid.getZ(); z++) {
-		for (int y = translation.getY(); y < cuboid.getY(); y++) {
-			for (int x = translation.getX(); x < cuboid.getX(); x++) {
+	for (int z = translation.getZ(); z < size.getZ(); z++) {
+		for (int y = translation.getY(); y < size.getY(); y++) {
+			for (int x = translation.getX(); x < size.getX(); x++) {
 				// This portion seems to be working correctly
 				//Our new density value
 				uint8_t uDensity = MaterialDensityPair44::getMaxDensity();
@@ -123,9 +124,9 @@ void createCuboid(SimpleVolume<MaterialDensityPair44>& volData, Vector3DFloat tr
 				voxel.setDensity(uDensity);
 
 				//Modify the material
-				voxel.setMaterial(1); //        <-- Add this line
+				voxel.setMaterial(1); 
 
-				//Wrte the voxel value into the volume
+				//Write the voxel value into the volume
 				volData.setVoxelAt(x, y, z, voxel);
 			}
 		}
@@ -134,13 +135,16 @@ void createCuboid(SimpleVolume<MaterialDensityPair44>& volData, Vector3DFloat tr
 
 int main()
 {
+	//create event receiver
 	EventReceiver receiver;
 
+	//initialize irrlicht
 	IrrlichtDevice *device = createDevice(video::EDT_OPENGL, dimension2d<u32>(640, 480), 32, false, false, false, &receiver);
 
 	if (!device)
 		return 1;
-
+	
+	//do not show cursor
 	device->getCursorControl()->setVisible(false);
 
 	/*
@@ -155,8 +159,10 @@ int main()
 
 	//Create an empty volume and then place a sphere in it
 	SimpleVolume<MaterialDensityPair44> volData(PolyVox::Region(Vector3DInt32(0,0,0), Vector3DInt32(64, 64, 64)));
-	createSphereInVolume(volData, 20.0F);
-	//createCuboid(volData,Vector3DFloat(0,0,0), Vector3DFloat(3,3,3));
+	createSphereInVolume(volData, Vector3DFloat(20,20,20), 10.0F);
+	createSphereInVolume(volData, Vector3DFloat(10,10,20), 10.0F);
+	createSphereInVolume(volData, Vector3DFloat(30,30,20), 10.0F);
+	//createCuboid(volData,Vector3DFloat(30,30,30), Vector3DFloat(10,10,10));
 
 	SurfaceMesh<PositionMaterialNormal> mesh;
 
@@ -200,9 +206,6 @@ int main()
 	*/
 
 	smgr->addCameraSceneNodeFPS();
-	
-
-	
 	
 	int lastFPS = -1;
 	
