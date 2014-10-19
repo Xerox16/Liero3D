@@ -29,23 +29,31 @@
 		"c": 1.0,
 		"d": 1.0
 	},
-	"skybox":
-	{
-		"top": "../assets/media/ba-top.jpg",
-		"bottom": "../assets/media/ba-bottom.jpg",
-		"left": "../assets/media/ba-left.jpg",
-		"right": "../assets/media/ba-right.jpg",
-		"back": "../assets/media/ba-back.jpg",
-		"front": "../assets/media/ba-front.jpg"
-	},
 	"textures":
 	{
-		"bottom": "../assets/assets/minecraft/textures/blocks/beacon.png",
-		"wall": "../assets/assets/minecraft/textures/blocks/beacon.png",
-		"ball": "../assets/assets/minecraft/textures/blocks/hardened_clay_stained_red.png"
+		"skydome": 		"../assets/TheSimpsons.jpg",
+		"skybox_top": 	"../assets/media/ba-top.jpg",
+		"skybox_bottom":	"../assets/media/ba-bottom.jpg",
+		"skybox_left": 	"../assets/media/ba-left.jpg",
+		"skybox_right": 	"../assets/media/ba-right.jpg",
+		"skybox_back": 	"../assets/media/ba-back.jpg",
+		"skybox_front": 	"../assets/media/ba-front.jpg",
+		"bottom": 			"../assets/assets/minecraft/textures/blocks/beacon.png",
+		"wall": 			"../assets/assets/minecraft/textures/blocks/beacon.png",
+		"ball": 			"../assets/assets/minecraft/textures/blocks/hardened_clay_stained_red.png",
+		"batter": 			"../assets/media/bronze.jpg"
 	},
 	"meshes":
 	{
 		"ball": "../assets/media/ball.x"
+	},
+	"fonts":
+	{
+		"menu": "../assets/media/fontoffi.png"
+	},
+	"images":
+	{
+		"logo": "../assets/media/woslogo.tga"
 	}
+		
 }
