@@ -483,7 +483,16 @@ void DrawPlayfield()  // Draw Playfield
 	side->setPosition(core::vector3df(0,-7,52.5));
 	side->setScale(core::vector3df(100,5,5));
 	side->setMaterialTexture(0, driver->getTexture("./media/wall.jpg"));
-	side->setMaterialFlag(video::EMF_LIGHTING, true);
+	side->setMaterialFlag(video::EMF_LIGHTING, true);/*
+ARKANOID - Breakoutclone Game 4 Wizzard of OZ4
+Autor: Dirk Hoeschen alias RubbelDieK@tz
+Email: rubbel@c-base.org
+This Game is public domain.
+*/
+
+/* Uncomment to use sound */
+
+
 
 	/*
 	Get ball

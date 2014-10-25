@@ -472,7 +472,7 @@ int main()
 					countdownTime = 5.f;
 					gameStarted = false;
 					gameEnded = true;
-					status->setText(L"Irrlicht Pong Demo");
+ogle.					status->setText(L"Irrlicht Pong Demo");
 				}
 
 			} else if(gameEnded) {

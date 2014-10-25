@@ -11,7 +11,8 @@
 #include "event_receiver.h"
 #include "controls.h"
 #include "exception.h"
-
+#include "entitycomposer.h"
+#include "components.h"
 using namespace std;
 
 BOOST_AUTO_TEST_SUITE(core_test)
@@ -275,6 +276,15 @@ BOOST_AUTO_TEST_CASE(controls_test)
 	BOOST_CHECK_EQUAL(listener.wasDown_, false);
 	eventReceiver.update();
 	listener.reset();	
+}
+
+BOOST_AUTO_TEST_CASE(entity_composer_test)
+{
+	EntityComposer composer;
+	EntityCreationContext context;
+	
+	registerComponents(composer);
+	composer.readXML("/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DEntityParts/assets/entities.json", context);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

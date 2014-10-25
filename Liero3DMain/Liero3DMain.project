@@ -27,10 +27,10 @@
   <Dependencies/>
   <VirtualDirectory Name="include"/>
   <VirtualDirectory Name="src">
-    <File Name="main.cpp" ExcludeProjConfig=""/>
     <File Name="polyvox_integration.cpp" ExcludeProjConfig="Debug"/>
     <File Name="colisionDetection.cpp" ExcludeProjConfig="Debug"/>
     <File Name="irrlichtMenu.cpp" ExcludeProjConfig="Debug"/>
+    <File Name="pong.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="assets">
     <File Name="assets/settings.json"/>

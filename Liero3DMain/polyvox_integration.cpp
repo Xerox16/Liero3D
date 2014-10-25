@@ -1,4 +1,13 @@
 #include <irrlicht.h>
+
+#include <irrlicht.h>
+#include <iostream>
+#include <string>
+#include <memory>
+
+#include <boost/exception/all.hpp>
+#include <boost/test/unit_test.hpp>
+
 #include <PolyVoxCore/MaterialDensityPair.h>
 #include <PolyVoxCore/CubicSurfaceExtractorWithNormals.h>
 #include <PolyVoxCore/MarchingCubesSurfaceExtractor.h>
@@ -8,7 +17,11 @@
 #include <PolyVoxCore/VertexTypes.h>
 #include <PolyVoxCore/Region.h>
 
+#include "utilities.h"
+#include "config.h"
+#include "exception.h"
 #include "event_receiver.h"
+
 
 /*
 In the Irrlicht Engine, everything can be found in the namespace 'irr'. So if
@@ -133,16 +146,57 @@ void createCuboid(SimpleVolume<MaterialDensityPair44>& volData, Vector3DFloat tr
 	}
 }
 
+void fillVolume(SimpleVolume<MaterialDensityPair44>& volData)
+{
+	
+	//This three-level for loop iterates over every voxel in the volume
+	for (int z = 3; z < volData.getHeight() - 3; z++) {
+		for (int y = 3; y < volData.getDepth() - 3; y++) {
+			for (int x = 3; x < volData.getWidth() - 3; x++) {
+				// This portion seems to be working correctly
+				//Our new density value
+				uint8_t uDensity = MaterialDensityPair44::getMaxDensity();
+
+				//Get the old voxel
+				MaterialDensityPair44 voxel = volData.getVoxelAt(x,y,z);
+
+				//Modify the density
+				voxel.setDensity(uDensity);
+
+				//Modify the material
+				voxel.setMaterial(1); 
+
+				//Write the voxel value into the volume
+				volData.setVoxelAt(x, y, z, voxel);
+			}
+		}
+	}
+}
+
 int main()
 {
-	//create event receiver
-	EventReceiver receiver;
+	Configuration config;
+	IrrlichtDevice* device;
+	EventReceiver eventReceiver;
 
-	//initialize irrlicht
-	IrrlichtDevice *device = createDevice(video::EDT_OPENGL, dimension2d<u32>(640, 480), 32, false, false, false, &receiver);
+	try {
+		config.load("../assets/settings.json");
 
-	if (!device)
+		int width = config.getInt("general.window_width");
+
+		int height = config.getInt("general.window_height")
+		;
+		int fullscreen = config.getInt("general.is_fullscreen");
+
+		device = IrrlichtUtilities::initialize(width, height, fullscreen, &eventReceiver);
+		if(!device) {
+			BOOST_THROW_EXCEPTION(BasicException("aborted creating irrlicht device"));
+		}
+
+	} catch(boost::exception& e) {
+		std::cout<<boost::diagnostic_information(e)<<std::endl;
 		return 1;
+	}
 	
 	//do not show cursor
 	device->getCursorControl()->setVisible(false);
@@ -154,15 +208,30 @@ int main()
 	device->getGUIEnvironment().
 	*/
 	IVideoDriver* driver = device->getVideoDriver();
-	ISceneManager* smgr = device->getSceneManager();
+	scene::ISceneManager* smgr = device->getSceneManager();
 	IGUIEnvironment* guienv = device->getGUIEnvironment();
+	
+	smgr->addSkyBoxSceneNode(
+		driver->getTexture(config.getString("skybox.top").c_str()),
+		driver->getTexture(config.getString("skybox.bottom").c_str()),
+		driver->getTexture(config.getString("skybox.left").c_str()),
+		driver->getTexture(config.getString("skybox.right").c_str()),
+		driver->getTexture(config.getString("skybox.front").c_str()),
+		driver->getTexture(config.getString("skybox.back").c_str())
+	);	
+	
+	//bottom 
+	
+	ISceneNode* bottom = 0;
+	bottom = smgr->addCubeSceneNode(1);
+	bottom->setPosition(core::vector3df(31.5,0,31.5));
+	bottom->setScale(core::vector3df(63,1,63));
+	bottom->setMaterialTexture(0, driver->getTexture(config.getString("textures.bottom").c_str()));
+	bottom->setMaterialFlag(video::EMF_LIGHTING, false);
 
 	//Create an empty volume and then place a sphere in it
-	SimpleVolume<MaterialDensityPair44> volData(PolyVox::Region(Vector3DInt32(0,0,0), Vector3DInt32(64, 64, 64)));
-	createSphereInVolume(volData, Vector3DFloat(20,20,20), 10.0F);
-	createSphereInVolume(volData, Vector3DFloat(10,10,20), 10.0F);
-	createSphereInVolume(volData, Vector3DFloat(30,30,20), 10.0F);
-	//createCuboid(volData,Vector3DFloat(30,30,30), Vector3DFloat(10,10,10));
+	SimpleVolume<MaterialDensityPair44> volData(PolyVox::Region(Vector3DInt32(0,0,0), Vector3DInt32(63, 63, 63)));
+	fillVolume(volData);
 
 	SurfaceMesh<PositionMaterialNormal> mesh;
 
@@ -171,18 +240,16 @@ int main()
 	surfaceExtractor.execute();
 
 	// Convert the mesh and hand it to Irrlicht
-	SMesh* testMesh = new SMesh;
+	scene::SMesh* testMesh = new SMesh;
 	IMeshBuffer * testBuffer = convertMesh(mesh);
 	testMesh->addMeshBuffer(testBuffer);
 	testMesh->recalculateBoundingBox();
+	
 
-	ISceneNode* meshNode = smgr->addMeshSceneNode(testMesh, 0, 0, vector3df(0, 0, 0), vector3df(0, 0, 0),vector3df(1.0F, 1.0F, 1.0F));
-	if(meshNode) {
-		//meshNode->setMaterialType(video::EMT_REFLECTION_2_LAYER);
-		meshNode->setMaterialTexture(0, driver->getTexture("/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DMain/assets/assets/minecraft/textures/blocks/log_jungle.png"));
-	}
+	ISceneNode* meshNode = smgr->addMeshSceneNode(testMesh);
+	meshNode->setMaterialFlag(video::EMF_LIGHTING, false);
 
-
+/*
 	// create light
 	ISceneNode* node = smgr->addLightSceneNode(0, core::vector3df(0,0,0), video::SColorf(1.0f, 0.6f, 0.7f, 1.0f), 800.0f);
 	if(node) {
@@ -195,9 +262,9 @@ int main()
 		if(node) {
 			node->setMaterialFlag(video::EMF_LIGHTING, false);
 			node->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-			node->setMaterialTexture(0, driver->getTexture("/home/xerox/Programmierung/Bibliotheken/irrlicht-1.8.1/media/particlewhite.bmp"));
+			node->setMaterialTexture(0, driver->getTexture(config.getString("textures.bottom").c_str()));
 		}
-	}
+	}*/
 
 
 
@@ -220,6 +287,9 @@ int main()
 	(or whatever keycode closes a window).
 	*/
 	int primitivesDrawnLast = -1;
+	int updateMeshCounter = 0;
+	int changeWorldCounter = 0;	
+	int i = 0;
 	
 	while(device->run()) {
 		const int now = device->getTimer()->getTime();
@@ -240,12 +310,44 @@ int main()
 
 		driver->endScene();
 		
+		if(changeWorldCounter++ == 1) {
+			createSphereInVolume(volData, Vector3DFloat(i,i,i), (float)i);
+			changeWorldCounter = 0;
+			i++;
+		}
+		
+		if(updateMeshCounter++ == 1) {
+			
+			
+			//delete old mesh
+			testMesh->clear();
+			
+			//extract altered mesh
+			PolyVox::MarchingCubesSurfaceExtractor<SimpleVolume<MaterialDensityPair44> > surfaceExtractor(&volData, volData.getEnclosingRegion(), &mesh);
+			surfaceExtractor.execute();
+
+			//convert mesh and hand it to irrlicht
+			IMeshBuffer * testBuffer = convertMesh(mesh);
+			testMesh->clear();
+			testMesh->addMeshBuffer(testBuffer);
+			testMesh->recalculateBoundingBox();
+			
+			updateMeshCounter = 0;
+		}
+				
 		int primitivesDrawn = driver->getPrimitiveCountDrawn();
-		if(primitivesDrawn != primitivesDrawnLast) {
+		int fps = driver->getFPS();
+		
+	
+		if(primitivesDrawn != primitivesDrawnLast || lastFPS != fps) {
 			stringw str = L"IrrlichtExample [Primitives Drawn: ";
 			str += primitivesDrawn;
-			str += "]";
+			str += "]  [";
+			str += driver->getName();
+			str += "] FPS: ";
+			str += fps;
 			device->setWindowCaption(str.c_str());
+			lastFPS = fps;
 		}
 
 	}

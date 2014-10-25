@@ -29,11 +29,12 @@
     <File Name="defines.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
-    <File Name="core_test.cpp" ExcludeProjConfig="Debug"/>
-    <File Name="entity_system_test.cpp" ExcludeProjConfig=""/>
+    <File Name="core_test.cpp" ExcludeProjConfig=""/>
+    <File Name="entity_system_test.cpp" ExcludeProjConfig="Debug"/>
   </VirtualDirectory>
   <VirtualDirectory Name="assets">
     <File Name="assets/debug.json"/>
+    <File Name="../Liero3DEntityParts/assets/entities.json"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
@@ -49,15 +50,17 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-Wall;-std=c++0x;-DBOOST_ALL_DYN_LINK" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g;-Wall;-std=c++0x;-DBOOST_ALL_DYN_LINK" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="/usr/include/irrlicht/"/>
         <IncludePath Value="../Liero3DCore/"/>
-        <IncludePath Value="../Liero3DEntitySystem"/>
+        <IncludePath Value="../Liero3DEntitySystem/"/>
+        <IncludePath Value="../Liero3DEntityParts/"/>
       </Compiler>
       <Linker Options="" Required="yes">
         <LibraryPath Value="/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DCore/Debug/"/>
         <LibraryPath Value="/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DEntitySystem/Debug/"/>
+        <LibraryPath Value="/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DEntityParts/Debug/"/>
         <Library Value="Irrlicht"/>
         <Library Value="pthread"/>
         <Library Value="boost_thread"/>
@@ -68,13 +71,14 @@
         <Library Value="boost_log"/>
         <Library Value="Liero3DCore"/>
         <Library Value="Liero3DEntitySystem"/>
+        <Library Value="Liero3DEntityParts"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
         <StartupCommands/>
@@ -103,7 +107,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
@@ -113,7 +117,7 @@
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
         <StartupCommands/>
@@ -142,7 +146,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Test" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-Wall;-std=c++0x;-DBOOST_ALL_DYN_LINK" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g;-Wall;-std=c++0x;-DBOOST_ALL_DYN_LINK" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="/usr/include/irrlicht/"/>
       </Compiler>
@@ -161,7 +165,7 @@
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
         <StartupCommands/>

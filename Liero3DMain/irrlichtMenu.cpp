@@ -199,7 +199,7 @@ int main()
 			if(selector) {
 				scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator(
 				                                      selector, camera, core::vector3df(30,50,30),
-				                                      core::vector3df(0,-10,0), core::vector3df(0,30,0));
+				            ;                          core::vector3df(0,-10,0), core::vector3df(0,30,0));
 				selector->drop(); // As soon as we're done with the selector, drop it.
 				camera->addAnimator(anim);
 				anim->drop();  // And likewise, drop the animator when we're done referring to it.

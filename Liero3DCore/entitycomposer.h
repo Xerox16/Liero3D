@@ -13,7 +13,7 @@ class MessageHub;
 
 //hold references to objects required when initializing entity parts
 struct EntityCreationContext {
-    MessageHub* messageHub_; //heart of the messaging system, forward all messages
+    MessageHub* messageHub_; //heart of the messaging system, forwards all messages
 };
 
 
@@ -30,4 +30,4 @@ private:
     std::map<std::string,composer> composers_;
 };
 
-#endif // _ENTITY_COMPOSER_H_
+#endif
