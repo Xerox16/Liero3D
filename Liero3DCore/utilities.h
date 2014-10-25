@@ -7,6 +7,7 @@
 namespace IrrlichtUtilities
 {
 
+	//throws BasicException if creation of irrlicht device fails
 irr::IrrlichtDevice* initialize(int widht, int height, int fullscreen, irr::IEventReceiver* eventReceiver);
 
 class CConverter

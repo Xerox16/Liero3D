@@ -1,4 +1,5 @@
 #include <iostream>
+#include "exception.h"
 
 #include "utilities.h"
 
@@ -50,7 +51,12 @@ IrrlichtDevice* initialize(int width, int height, int fullscreen, IEventReceiver
 
 	IrrlichtDevice* device =
 	    createDevice(driverType, core::dimension2d<u32>(width, height), 32, isFullscreen, false, false, receiver);
-
+	
+	//throw exception if creating irrlicht device failed
+	if(!device) {
+		BOOST_THROW_EXCEPTION(BasicException("failed to create irrlicht device"));
+	}
+	
 	return device;
 }
 
