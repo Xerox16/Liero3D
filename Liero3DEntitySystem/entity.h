@@ -33,6 +33,10 @@ public:
 	//add entity components
 	void addState   (std::shared_ptr<State> state);
 	void addAction  (std::shared_ptr<Action> action);
+	
+	//add component types
+	//template <typename T> void addType(const std::string& id); //add type to types_ for resolving component types from strings
+	void addType(std::shared_ptr<State> state, const std::string& id); //add type to types_ for resolving component types from strings
 
 	//get pointers to entity components
 	template <typename T> std::shared_ptr<T>  getStatePtr () const;
@@ -40,17 +44,32 @@ public:
 	template <typename T> T* getState  () const;
 	template <typename T> T* getAction () const;
 	
+	//get pointers to entity component base classes if type is unknown
+	std::shared_ptr<State>  getStatePtr (const std::string& id) const;
+	std::shared_ptr<Action>  getActionPtr(const std::string& id) const;
+	State* getState  (const std::string& id) const;
+	Action* getAction (const std::string& id) const;
+	
 	//remove entity components
 	template <typename T> void removeState();
 	template <typename T> void removeAction();
 	
+	//remove entity component if type is unknown
+	void removeState(const std::string& id);
+	void removeAction(const std::string& id);
+	
 	//use action, target == NULL equals target == this
 	template <typename T> bool useAction(Entity* target = NULL);
+	bool useAction(const std::string& id, Entity* target = NULL);
 	
 	//manage updated actions that can be applied with low overhead with updateActions
 	template <typename T> void enableActionUpdate();
 	template <typename T> void disableActionUpdate();
+	void enableActionUpdate(const std::string& id);
+	void disableActionUpdate(const std::string& id);
+	
 	void updateActions();	
+	
 	
 	//clones entire Entity, references to other objects (space_, states_) are not simply copied, but these objects are cloned
 	Entity* clone() const; 
@@ -61,6 +80,7 @@ protected:
 	std::map<std::type_index, std::shared_ptr<State> >  states_;
 	std::map<std::type_index, std::shared_ptr<Action> > actions_;
 	std::set<std::type_index> updatedActions_; //used actions are called every frame as long as they exist
+	std::map<std::string, std::type_index> types_; //translates names of types to types so that states, actions... can be retrieved without knowing the actual object type
 };
 
 #include "entity.inc"
