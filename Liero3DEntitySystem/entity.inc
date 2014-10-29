@@ -1,7 +1,7 @@
 #include "space.h"
 #include "state.h"
 #include "action.h"
-
+#include <vector>
 
 Entity::Entity() :  key_(-1), space_(), states_(), actions_(), updatedActions_()
 {
@@ -62,18 +62,12 @@ void Entity::addAction(std::shared_ptr<Action> action)
 	actions_[std::type_index(typeid(*action))] = action; //save state with class type of state as key
 }
 
-/*
+
 template <typename T> void Entity::addType(const std::string& id) 
 {
 	std::type_index index(typeid(T));
-	types_[id] = index;
-}*/
-
-void Entity::addType(std::shared_ptr<State> state, const std::string& id) 
-{
-	types_[id] = std::type_index(typeid(*state));
+	types_.insert(std::pair<std::string, std::type_index> (id, index));
 }
-
 
 template <typename T> std::shared_ptr<T>  Entity::getStatePtr () const
 {

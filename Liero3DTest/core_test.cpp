@@ -12,7 +12,8 @@
 #include "controls.h"
 #include "exception.h"
 #include "entitycomposer.h"
-#include "components.h"
+#include "debug_components.h"
+
 using namespace std;
 
 BOOST_AUTO_TEST_SUITE(core_test)
@@ -283,8 +284,11 @@ BOOST_AUTO_TEST_CASE(entity_composer_test)
 	EntityComposer composer;
 	EntityCreationContext context;
 	
-	registerComponents(composer);
-	composer.readXML("/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DEntityParts/assets/entities.json", context);
+	registerDebugComponents(composer);
+	std::map<std::string, Entity::ptr> entities = composer.readXML("/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DTest/assets/debug_entities.json", context);
+	Entity::ptr worm(entities["worm"]->clone());
+	worm->useAction<AddToInt>();
+	Int* integer = worm->getState<Int>();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

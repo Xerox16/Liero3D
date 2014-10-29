@@ -86,9 +86,16 @@ BOOST_AUTO_TEST_CASE(entity_test)
 	std::shared_ptr<Double> newDouble;
 	Double* newDoublePtr;
 	
+	std::shared_ptr<State> newState;
+	State* newStatePtr;	
+	
 	//add states to entity
 	entity.addState(oldInt);
 	entity.addState(oldDouble);
+	
+	//add types to entity
+	entity.addType<Int>("int");
+	entity.addType<Double>("double");
 	
 	//fetch states from entity
 	newInt = entity.getStatePtr<Int>();
@@ -101,6 +108,19 @@ BOOST_AUTO_TEST_CASE(entity_test)
 	BOOST_REQUIRE_EQUAL(oldInt.get(), newIntPtr);
 	BOOST_REQUIRE_EQUAL(oldDouble.get(), newDouble.get());
 	BOOST_REQUIRE_EQUAL(oldDouble.get(), newDoublePtr);
+	
+	//fetch states from entity with string helper function
+	newState = entity.getStatePtr("int");
+	newStatePtr = entity.getState("int");
+	
+	BOOST_REQUIRE_EQUAL(oldInt.get(), newState.get());
+	BOOST_REQUIRE_EQUAL(oldInt.get(), newStatePtr);
+	
+	newState = entity.getStatePtr("double");
+	newStatePtr = entity.getState("double");
+	
+	BOOST_REQUIRE_EQUAL(oldDouble.get(), newState.get());
+	BOOST_REQUIRE_EQUAL(oldDouble.get(), newStatePtr);
 	
 	//remove states
 	entity.removeState<Int>();
@@ -118,6 +138,26 @@ BOOST_AUTO_TEST_CASE(entity_test)
 	BOOST_REQUIRE(newDouble.get() == NULL);
 	BOOST_REQUIRE(newDoublePtr == NULL);
 	
+	//add states to entity
+	entity.addState(oldInt);
+	entity.addState(oldDouble);
+	
+	//remove states with string helper function with invalid ids
+	entity.removeState("intf");
+	entity.removeState("double");
+	
+	//fetch them once again
+	newInt = entity.getStatePtr<Int>();
+	newIntPtr = entity.getState<Int>();
+	newDouble = entity.getStatePtr<Double>();
+	newDoublePtr = entity.getState<Double>();
+	
+	//now int should still exist, double should be deleted
+	BOOST_REQUIRE_EQUAL(newInt.get(), oldInt.get());
+	BOOST_REQUIRE_EQUAL(newIntPtr, oldInt.get());
+	BOOST_REQUIRE(newDouble.get() == NULL);
+	BOOST_REQUIRE(newDoublePtr == NULL);
+	
 	//create actions
 	std::shared_ptr<AddToInt> oldAddInt(new AddToInt);
 	std::shared_ptr<AddToInt> newAddInt;
@@ -127,9 +167,15 @@ BOOST_AUTO_TEST_CASE(entity_test)
 	std::shared_ptr<AddToDouble> newAddDouble;
 	AddToDouble* newAddDoublePtr;
 	
+	std::shared_ptr<Action> actionPtr;
+	Action* action;
+	
 	//add them to the entity
 	entity.addAction(oldAddInt);
 	entity.addAction(oldAddDouble);
+	
+	entity.addType<AddToInt>("add_to_int");
+	entity.addType<AddToDouble>("add_to_double");
 	
 	//fetch them from entity
 	newAddInt = entity.getActionPtr<AddToInt>();
@@ -142,6 +188,15 @@ BOOST_AUTO_TEST_CASE(entity_test)
 	BOOST_REQUIRE_EQUAL(oldAddInt.get(), newAddIntPtr);
 	BOOST_REQUIRE_EQUAL(oldAddDouble.get(), newAddDouble.get());
 	BOOST_REQUIRE_EQUAL(oldAddDouble.get(), newAddDoublePtr);
+	
+	//retrieve actions by id
+	actionPtr = entity.getActionPtr("add_to_int");
+	action = entity.getAction("Schrott");
+	
+	
+	BOOST_REQUIRE_EQUAL(oldAddInt.get(), actionPtr.get());
+	BOOST_REQUIRE(action == 0);
+	
 	
 	//delete actions from entity
 	entity.removeAction<AddToInt>();
@@ -160,25 +215,50 @@ BOOST_AUTO_TEST_CASE(entity_test)
 	BOOST_REQUIRE(newAddDouble.get() == NULL);
 	BOOST_REQUIRE(newAddDoublePtr == NULL);
 	
+	
+	//add them to the entity
+	entity.addAction(oldAddInt);
+	entity.addAction(oldAddDouble);
+	
+	
+	//delete actions from entity with string helper functions
+	entity.removeAction("add_to_int");
+	entity.removeAction("Schrott"); //test false id
+	
+	actionPtr = entity.getActionPtr("add_to_int");
+	action = entity.getAction("add_to_double");
+	
+	BOOST_REQUIRE(actionPtr.get() == 0);
+	BOOST_REQUIRE(action == oldAddDouble.get());
+	
+	
 	//check clone function
 	
-	//therefore add states and actions
+	//therefore add states, actions and types
 	entity.addState(oldInt);
 	entity.addState(oldDouble);
 	entity.addAction(oldAddInt);
 	entity.addAction(oldAddDouble);
+	entity.addType<Int>("int");
+	entity.addType<Double>("double");
+	entity.addType<AddToInt>("add_to_int");
+	entity.addType<AddToDouble>("add_to_double");
 	
 	//define cloned entity
 	std::shared_ptr<Entity> clone(entity.clone());
 	
-	BOOST_REQUIRE(entity.getKey() 					== clone->getKey());
-	BOOST_REQUIRE(entity.getSpace() 				== clone->getSpace());
-	BOOST_REQUIRE(entity.getState<Int>() 			!= clone->getState<Int>());
-	BOOST_REQUIRE(entity.getState<Double>() 		!= clone->getState<Double>());
-	BOOST_REQUIRE(entity.getState<Int>()->i 		== clone->getState<Int>()->i);
-	BOOST_REQUIRE(entity.getState<Double>()->d 	== clone->getState<Double>()->d);
-	BOOST_REQUIRE(entity.getAction<AddToInt>()		!= clone->getAction<AddToInt>());
-	BOOST_REQUIRE(entity.getAction<AddToDouble>() != clone->getAction<AddToDouble>());
+	BOOST_REQUIRE(entity.getKey() 						== clone->getKey());
+	BOOST_REQUIRE(entity.getSpace() 					== clone->getSpace());
+	BOOST_REQUIRE(entity.getState<Int>() 				!= clone->getState<Int>());
+	BOOST_REQUIRE(entity.getState<Double>() 			!= clone->getState<Double>());
+	BOOST_REQUIRE(entity.getState<Int>()->i 			== clone->getState<Int>()->i);
+	BOOST_REQUIRE(entity.getState<Double>()->d 		== clone->getState<Double>()->d);
+	BOOST_REQUIRE(entity.getAction<AddToInt>()			!= clone->getAction<AddToInt>());
+	BOOST_REQUIRE(entity.getAction<AddToDouble>() 	!= clone->getAction<AddToDouble>());
+	BOOST_REQUIRE(entity.getState("int") 				!= clone->getState("int"));
+	BOOST_REQUIRE(entity.getState("double") 			!= clone->getState("double"));
+	BOOST_REQUIRE(entity.getAction("add_to_int")		!= clone->getAction("add_to_int"));
+	BOOST_REQUIRE(entity.getAction("add_to_double")	!= clone->getAction("add_to_double"));
 }
 
 BOOST_AUTO_TEST_CASE(action_test)

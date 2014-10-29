@@ -4,8 +4,8 @@
 #include <map>
 #include <set>
 #include <memory>
-#include <typeindex>
 #include <typeinfo>
+#include <typeindex>
 
 //forward declarations
 class Space;
@@ -35,8 +35,8 @@ public:
 	void addAction  (std::shared_ptr<Action> action);
 	
 	//add component types
-	//template <typename T> void addType(const std::string& id); //add type to types_ for resolving component types from strings
-	void addType(std::shared_ptr<State> state, const std::string& id); //add type to types_ for resolving component types from strings
+	template <typename T> void addType(const std::string& id); //add type to types_ for resolving component types from strings
+	//void addType(std::shared_ptr<State> state, const std::string& id); //add type to types_ for resolving component types from strings
 
 	//get pointers to entity components
 	template <typename T> std::shared_ptr<T>  getStatePtr () const;
