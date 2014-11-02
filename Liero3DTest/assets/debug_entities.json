@@ -1,0 +1,13 @@
+{
+	"worm": 
+	{
+		"int": 2,
+		"double": 
+		{
+			"value": 3.14,
+			"value2": 6.28
+		},
+		"add_to_int": 0,
+		"add_to_double": 0
+	}
+}

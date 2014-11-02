@@ -287,8 +287,15 @@ BOOST_AUTO_TEST_CASE(entity_composer_test)
 	registerDebugComponents(composer);
 	std::map<std::string, Entity::ptr> entities = composer.readXML("/home/xerox/Programmierung/C++-Projekte/Irrlicht/Liero3DTest/assets/debug_entities.json", context);
 	Entity::ptr worm(entities["worm"]->clone());
+	
 	worm->useAction<AddToInt>();
 	Int* integer = worm->getState<Int>();
+	
+	worm->useAction<AddToDouble>();	
+	Double* d = worm->getState<Double>();
+	
+	BOOST_REQUIRE_EQUAL(integer->i, 1);
+	BOOST_REQUIRE_CLOSE_FRACTION(d->d, 4.14, 0.0001);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
