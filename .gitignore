@@ -40,9 +40,14 @@ Thumbs.db
 Liero3DCore/Debug/
 Liero3DTest/Debug/
 Liero3DMain/Debug/
+Liero3DEntityParts/Debug/
+Liero3DMain/assets/
+arkanoid/
+media/
 *.mk
 *.txt
 .clang
 .codelite
 .build-debug
+Irrlicht.project
 Makefile
