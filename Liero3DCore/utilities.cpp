@@ -5,8 +5,6 @@
 
 using namespace irr;
 
-namespace IrrlichtUtilities {
-
 IrrlichtDevice* initialize(int width, int height, int fullscreen, IEventReceiver* receiver)
 {
 	video::E_DRIVER_TYPE driverType;
@@ -96,8 +94,5 @@ const std::string CConverter::wchartToStr(const wchar_t* wInput)
    delete nbOfChar;
    delete[] cOut;
    return sOutput;
-
-}
-
 
 }

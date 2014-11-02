@@ -4,9 +4,6 @@
 #include <irrlicht.h>
 #include <string>
 
-namespace IrrlichtUtilities
-{
-
 	//throws BasicException if creation of irrlicht device fails
 irr::IrrlichtDevice* initialize(int widht, int height, int fullscreen, irr::IEventReceiver* eventReceiver);
 
@@ -23,6 +20,12 @@ private:
 
 };
 
-}
+struct IrrlichtHelper {
+	irr::IrrlichtDevice* device;	//irrlicht main device
+	irr::video::IVideoDriver* driver; //video driver
+	irr::scene::ISceneManager* smgr; //scene manager
+	irr::gui::IGUIEnvironment* gui; //gui
+};
+
 
 #endif

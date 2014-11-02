@@ -10,10 +10,12 @@
 
 class Entity;
 class MessageHub;
+class IrrlichtHelper;
 
 //hold references to objects required when initializing entity parts
 struct EntityCreationContext {
     MessageHub* messageHub_; //heart of the messaging system, forwards all messages
+	IrrlichtHelper* irrH_; //struct withirrlicht device, scene and gui manager, and video driver
 };
 
 
