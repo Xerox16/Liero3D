@@ -34,7 +34,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="assets">
     <File Name="assets/debug.json"/>
-    <File Name="../Liero3DEntityParts/assets/entities.json"/>
+    <File Name="assets/debug_entities.json"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

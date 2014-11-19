@@ -30,7 +30,7 @@
     <File Name="polyvox_integration.cpp" ExcludeProjConfig="Debug"/>
     <File Name="colisionDetection.cpp" ExcludeProjConfig="Debug"/>
     <File Name="irrlichtMenu.cpp" ExcludeProjConfig="Debug"/>
-    <File Name="pong.cpp"/>
+    <File Name="pong.cpp" ExcludeProjConfig=""/>
   </VirtualDirectory>
   <VirtualDirectory Name="assets">
     <File Name="assets/settings.json"/>

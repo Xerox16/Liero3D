@@ -35,7 +35,7 @@
     <File Name="utilities.h"/>
     <File Name="event_receiver.h"/>
     <File Name="controls.h" ExcludeProjConfig=""/>
-    <File Name="entitycomposer.h"/>
+    <File Name="entitycomposer.h" ExcludeProjConfig="Debug"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
     <File Name="messagehub.cpp"/>
@@ -43,7 +43,7 @@
     <File Name="utilities.cpp"/>
     <File Name="event_receiver.cpp"/>
     <File Name="controls.cpp" ExcludeProjConfig=""/>
-    <File Name="entitycomposer.cpp"/>
+    <File Name="entitycomposer.cpp" ExcludeProjConfig="Debug"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
@@ -63,6 +63,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="/usr/include/irrlicht"/>
         <IncludePath Value="/home/xerox/Programmierung/Bibliotheken/utf8/source/utf8.h"/>
+        <IncludePath Value="../Liero3DEntitySystem/"/>
       </Compiler>
       <Linker Options="" Required="yes">
         <Library Value="Irrlicht"/>

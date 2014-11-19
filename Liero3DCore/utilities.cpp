@@ -4,7 +4,7 @@
 #include "utilities.h"
 
 using namespace irr;
-
+	
 IrrlichtDevice* initialize(int width, int height, int fullscreen, IEventReceiver* receiver)
 {
 	video::E_DRIVER_TYPE driverType;

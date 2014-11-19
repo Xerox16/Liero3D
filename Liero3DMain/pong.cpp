@@ -49,7 +49,7 @@ scene::ICameraSceneNode* camera;
 scene::ISceneNodeAnimator* camAnim;
 
 std::vector<scene::IMeshSceneNode*> batters;
-f32 batterSpeed = 50.f;
+f32 batterSpeed = 100.f;
 
 std::vector<int> points (2,0);
 
@@ -60,7 +60,7 @@ gui::IGUIButton* startButton = NULL;
 gui::IGUIButton* continueButton = NULL;
 
 //create converter from irrlicht strings to normal strings and back
-IrrlichtUtilities::CConverter converter;
+CConverter converter;
 
 void initGame(bool bFPOne)
 {
@@ -183,7 +183,6 @@ void drawPlayfield(IrrlichtHelper irrH, const Configuration& config)
 	side->setScale(core::vector3df(5,5,110));
 	side->setMaterialTexture(0, irrH.driver->getTexture(config.getString("textures.wall").c_str()));
 	side->setMaterialFlag(video::EMF_LIGHTING, true);
-
 	side = irrH.smgr->addCubeSceneNode(1);
 	side->setPosition(core::vector3df(52.5,-7,0));
 	side->setScale(core::vector3df(5,5,110));
@@ -292,7 +291,7 @@ int main()
 		int height = config.getInt("general.window_height");
 		int fullscreen = config.getInt("general.is_fullscreen");
 
-		device = IrrlichtUtilities::initialize(width, height, fullscreen, &eventReceiver);
+		device = initialize(width, height, fullscreen, &eventReceiver);
 
 		//handle exception in case creation of irrlicht device fails
 	} catch(boost::exception& e) {
@@ -435,31 +434,31 @@ int main()
 
 				ball->setPosition(pos);
 
-				if((pos.Z <= -50) && (pos.Z >= -54)) {
+				if((pos.Z <= -50) && (pos.Z >= -70)) {
 					int bvector = static_cast<int>(pos.X) - batters[0]->getPosition().X;
 					if((bvector <= 8) && (bvector >= -8)) {
 						ballSpeedZ *= -1;
-						ballSpeedZ += 5;
-						ballSpeedX = bvector * 20;
+						ballSpeedZ += 10;
+						ballSpeedX = bvector * 10;
 					}
 				}
 
-				if((pos.Z >= 50) && (pos.Z <= 54)) {
+				if((pos.Z >= 50) && (pos.Z <= 70)) {
 					int bvector = static_cast<int>(pos.X) - batters[1]->getPosition().X;
 					if((bvector <= 8) && (bvector >= -8)) {
 						ballSpeedZ *= -1;
-						ballSpeedZ += 5;
-						ballSpeedX = bvector * 20;
+						ballSpeedZ -= 10;
+						ballSpeedX = bvector * 10;
 					}
 				}
 
 
 				if(pos.Z > 60) {
 					points[0]++;
-					initGame(false);
+					initGame(true);
 				} else if(pos.Z < -60) {
 					points[1]++;
-					initGame(true);
+					initGame(false);
 				}
 
 				if(points[0] >= maxPoints) {
@@ -472,7 +471,7 @@ int main()
 					countdownTime = 5.f;
 					gameStarted = false;
 					gameEnded = true;
-ogle.					status->setText(L"Irrlicht Pong Demo");
+					status->setText(L"Irrlicht Pong Demo");
 				}
 
 			} else if(gameEnded) {

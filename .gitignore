@@ -51,3 +51,5 @@ media/
 .build-debug
 Irrlicht.project
 Makefile
+*.project
+*.workspace

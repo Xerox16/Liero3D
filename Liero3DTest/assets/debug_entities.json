@@ -8,6 +8,7 @@
 			"value2": 6.28
 		},
 		"add_to_int": 0,
-		"add_to_double": 0
+		"add_to_double": 0,
+		"position": ["20","30","30"]
 	}
 }
